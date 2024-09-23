@@ -1,0 +1,93 @@
+
+/* details View Email  */
+.wrap.email-details {
+    direction: rtl;
+    text-align: right;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    font-family: 'Tahoma', sans-serif;
+}
+
+.wrap.email-details h1 {
+    color: #007cba;
+    border-bottom: 2px solid #007cba;
+    padding-bottom: 10px;
+}
+
+.wrap.email-details p {
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+.wrap.email-details strong {
+    color: #333;
+    font-weight: bold;
+}
+
+.wrap.email-details ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wrap.email-details ul li {
+    background: #fff;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.wrap.email-details .button {
+    background-color: #007cba;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.wrap.email-details .button:hover {
+    background-color: #005a9e;
+}
+
+.wrap.email-details .body-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+
+
+/* History Email  */
+.tablenav .tablenav-pages {
+    float: left;
+    margin: 1em 0;
+    white-space: nowrap;
+}
+
+.tablenav .tablenav-pages .page-numbers {
+    display: inline-block;
+    margin: 0 2px;
+    padding: 0.5em 0.75em;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    text-decoration: none;
+}
+
+.tablenav .tablenav-pages .page-numbers.current {
+    background-color: #007cba;
+    color: #fff;
+    border-color: #007cba;
+}
+
+.tablenav .tablenav-pages .page-numbers:hover {
+    background-color: #007cba;
+    color: #fff;
+}
