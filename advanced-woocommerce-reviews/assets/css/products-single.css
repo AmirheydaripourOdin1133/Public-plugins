@@ -1,0 +1,521 @@
+@charset "UTF-8";
+/** break point **/
+.TopSingleProducts {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100% !important;
+  float: none !important;
+  flex-wrap: wrap;
+}
+.TopSingleProducts .breadcrumbs {
+  width: 100%;
+}
+
+.related.products.sectionsProductTab .listProductSectionFront > img {
+  width: 100%;
+  height: 450px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 25px;
+}
+@media (max-width: 1050px) {
+  .related.products.sectionsProductTab .listProductSectionFront > img {
+    display: none;
+  }
+}
+
+.custom-woocommerce-tabs {
+  width: 100%;
+  display: flex;
+}
+
+.commentsListCustom .comment {
+  border-bottom: 1px solid rgba(238, 238, 238, 0.9333333333);
+  width: 100%;
+  padding: 30px 0;
+  display: flex;
+  flex-direction: column;
+}
+@media (max-width: 768px) {
+  .commentsListCustom .comment {
+    padding: 20px 0;
+  }
+}
+.commentsListCustom .comment:hover .reply-btn {
+  color: #7e7e7e !important;
+}
+.commentsListCustom .comment .reply-btn {
+  color: #fcfcfc !important;
+  display: block;
+  text-align: left;
+  position: relative;
+  transition: all ease-in-out 0.3s;
+  background: none !important;
+  border: none !important;
+  cursor: pointer;
+}
+@media (max-width: 768px) {
+  .commentsListCustom .comment .reply-btn {
+    color: #7e7e7e !important;
+  }
+}
+.commentsListCustom .comment .reply-btn::before {
+  position: absolute;
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 -960 960 960' width='24' fill='%23a8a8a8'%3E%3Cpath d='m600-200-56-57 143-143H300q-75 0-127.5-52.5T120-580t52.5-127.5T300-760h20v80h-20q-42 0-71 29t-29 71 29 71 71 29h387L544-624l56-56 240 240z'/%3E%3C/svg%3E");
+  top: 2px;
+  left: 35px;
+}
+.commentsListCustom .comment:first-of-type {
+  padding-top: 0;
+}
+.commentsListCustom .comment .ContentComment {
+  color: #313131;
+  font-weight: 400;
+  line-height: 35px;
+  text-align: justify;
+  font-size: 13px;
+}
+.commentsListCustom .comment .CommHeading {
+  display: flex;
+  align-content: center;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+.commentsListCustom .comment .CommHeading .CommRating .stars-container .star {
+  font-size: 20px;
+  margin-left: 1px;
+}
+.commentsListCustom .comment .CommHeading > p {
+  display: flex;
+  align-content: center;
+  gap: 15px;
+  margin: 0;
+}
+.commentsListCustom .comment .CommHeading > p > strong {
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 22px;
+  color: #868686;
+}
+.commentsListCustom .comment .CommHeading > p > span.green {
+  background: #ECF8EE !important;
+  color: #119727 !important;
+}
+.commentsListCustom .comment .CommHeading > p > span {
+  background: #ffc9c9;
+  color: #B71656;
+  padding: 1px 7px;
+  border-radius: 30px;
+  font-size: 12.5px;
+  line-height: 19px;
+  font-weight: 300;
+}
+.commentsListCustom .comment .CommHeading .DataComm {
+  font-size: 12px;
+  color: #707070;
+  line-height: 19px;
+  padding-top: 3px;
+}
+
+.CommentCustomParents .SortCommentLists {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 5px;
+  margin: 55px 0 35px 0;
+  border-bottom: 1px solid rgba(112, 112, 112, 0.3215686275);
+  padding: 18px 0;
+  flex-wrap: wrap;
+}
+.CommentCustomParents .SortCommentLists > span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #616161;
+}
+@media (max-width: 768px) {
+  .CommentCustomParents .SortCommentLists > span {
+    gap: 3px;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+}
+.CommentCustomParents .SortCommentLists .sort-btn.selctsort {
+  color: #B71656;
+}
+.CommentCustomParents .SortCommentLists .sort-btn {
+  border: none;
+  background: none;
+  padding: 0 10px;
+  font-size: 13.5px;
+  font-weight: 400;
+  transition: all linear 0.2s;
+  color: #5A5A5A;
+  cursor: pointer;
+}
+@media (max-width: 768px) {
+  .CommentCustomParents .SortCommentLists .sort-btn {
+    padding: 0 3px !important;
+  }
+}
+.CommentCustomParents .SortCommentLists .sort-btn:hover {
+  color: #B71656;
+}
+.CommentCustomParents #reply-popup, .CommentCustomParents #comment-popup-message {
+  display: none; /* پیش‌فرض مخفی */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border-radius: 8px;
+  z-index: 9999;
+  font-size: 16px;
+  color: #333;
+  text-align: center;
+}
+.CommentCustomParents #reply-popup.active, .CommentCustomParents #comment-popup-message.active {
+  display: block; /* نمایش وقتی کلاس active اضافه می‌شود */
+}
+.CommentCustomParents .commentsListCustom .comment > .replies {
+  margin-right: 18PX;
+}
+.CommentCustomParents .commentsListCustom .comment .replies.open {
+  margin: 0;
+}
+.CommentCustomParents .commentsListCustom .comment .replies.open form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 15px 0;
+}
+.CommentCustomParents .commentsListCustom .comment .replies.open form .close-reply-form {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #767474;
+  font-weight: 400;
+  cursor: pointer;
+}
+.CommentCustomParents .commentsListCustom .comment .replies.open form .close-reply-form svg path {
+  stroke: #b71656;
+}
+.CommentCustomParents .commentsListCustom .comment .replies.open form > button {
+  border-radius: 10px;
+  border: none;
+  width: -moz-max-content;
+  width: max-content;
+  margin: 10px auto 0 0;
+  cursor: pointer;
+}
+
+.ParentGenReaSub {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  position: relative;
+}
+.ParentGenReaSub .star-rating {
+  position: relative;
+}
+.ParentGenReaSub .star-rating span {
+  padding: 0 !important;
+}
+
+.commentscountParent {
+  margin-right: auto;
+}
+.commentscountParent .comments-count {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ababab;
+}
+
+.commentCustomsPopup.open {
+  display: block;
+}
+
+.commentCustomsPopup {
+  position: fixed;
+  max-width: 400px;
+  z-index: 999999;
+  background: white;
+  padding: 12px 20px 30px 20px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: none;
+  height: -moz-max-content;
+  height: max-content;
+  margin: auto;
+  border: 1px solid #e9e9e9;
+  border-radius: 15px;
+}
+@media (max-width: 480px) {
+  .commentCustomsPopup {
+    max-width: 320px !important;
+  }
+}
+.commentCustomsPopup .closs_custom_comment_Gen {
+  display: block;
+  padding-bottom: 20px;
+  cursor: pointer;
+}
+.commentCustomsPopup #ajax-comment-form {
+  text-align: center;
+}
+.commentCustomsPopup #ajax-comment-form .GenralBtns {
+  border: none !important;
+  font-size: 14px !important;
+  cursor: pointer;
+  border-radius: 12px !important;
+  padding: 10px 38px !important;
+}
+.commentCustomsPopup #ajax-comment-form > input, .commentCustomsPopup #ajax-comment-form textarea {
+  margin: 10px 0;
+  font-size: 12.5px !important;
+  padding: 10px !important;
+  color: #333 !important;
+}
+.commentCustomsPopup #ajax-comment-form > textarea {
+  height: 90px;
+}
+
+.star-rating {
+  display: inline-block;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  padding-top: 10px;
+}
+
+.custom-star {
+  font-size: 28px;
+  cursor: pointer;
+  color: #d3d3d3;
+  transition: color 0.2s;
+}
+
+.custom-star.selected {
+  color: #daa520;
+}
+
+#custom-comments {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  margin: 60px auto;
+  gap: 70px;
+}
+@media (max-width: 1260px) {
+  #custom-comments {
+    gap: 25px;
+  }
+}
+#custom-comments .pagination {
+  margin-top: 20px;
+  text-align: center;
+}
+#custom-comments .pagination-link {
+  display: inline-block;
+  margin: 0 5px;
+  padding: 5px 10px;
+  background: #f0f0f0;
+  color: #333;
+  text-decoration: none;
+  border-radius: 3px;
+  transition: background 0.3s;
+}
+#custom-comments .pagination-link:hover {
+  background: #0073aa;
+  color: #fff;
+}
+#custom-comments .rightscol {
+  width: 20%;
+}
+@media (max-width: 768px) {
+  #custom-comments .rightscol {
+    width: 100%;
+    text-align: center !important;
+  }
+}
+#custom-comments .rightscol > h3 {
+  color: #B71656;
+  font-size: 16px;
+  text-align: right;
+  padding-bottom: 35px;
+  margin: 0;
+}
+@media (max-width: 768px) {
+  #custom-comments .rightscol > h3 {
+    text-align: center;
+  }
+}
+#custom-comments .rightscol > p, #custom-comments .rightscol > span {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #5A5A5A;
+  margin: 0;
+  padding-bottom: 20px;
+}
+#custom-comments .rightscol #open-comment-popup {
+  border: 1px solid #B71656;
+  background: #fff;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  color: #B71656;
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 10px;
+  padding: 8px;
+  transition: all linear 0.2s;
+  cursor: pointer;
+}
+#custom-comments .rightscol #open-comment-popup:hover {
+  background-color: #B71656;
+  color: #fff;
+}
+#custom-comments .rightscol .rating-container .rating-summary {
+  color: #313131;
+  font-size: 11px;
+}
+#custom-comments .rightscol .rating-container .rating-summary > strong {
+  font-size: 22px;
+  font-weight: 700;
+}
+#custom-comments .CommentCustomParents {
+  width: 74%;
+  position: relative;
+  z-index: 0;
+}
+@media (max-width: 768px) {
+  #custom-comments .CommentCustomParents {
+    width: 100%;
+  }
+}
+
+.stars-container .star {
+  font-size: 22px;
+  margin-left: 2px;
+}
+.stars-container .star.full {
+  color: #ee9e26;
+}
+.stars-container .star.half {
+  color: #ffac33;
+}
+.stars-container .star.empty {
+  color: #ddd;
+}
+
+#ajax-comment-form .star-rating {
+  display: flex;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+#ajax-comment-form .tooltip {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  visibility: hidden;
+  font-size: 12px;
+  transition: visibility 0.3s, opacity 0.3s;
+  opacity: 0;
+  left: 0;
+  right: 0;
+  width: -moz-max-content;
+  width: max-content;
+  top: 0;
+  bottom: -25px;
+  height: -moz-min-content;
+  height: min-content;
+  margin: auto;
+}
+
+#ajax-comment-form .tooltip.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+#ajax-comment-form .star-rating {
+  width: calc(100% - 150px);
+  display: flex !important;
+  height: -moz-max-content !important;
+  height: max-content !important;
+  justify-content: end;
+}
+
+#ajax-comment-form .star-rating::before {
+  display: none;
+}
+
+#ajax-comment-form .star-rating > span svg path {
+  fill: #f39c12 !important;
+  transition: all linear 0.2s;
+}
+
+#ajax-comment-form .star-rating span {
+  display: block !important;
+  float: inherit !important;
+  position: initial !important;
+}
+
+#ajax-comment-form .star-rating span::before {
+  display: none;
+  font-family: WooCommerce;
+}
+
+#loading-spinner {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  -webkit-backdrop-filter: blur(0.7px);
+          backdrop-filter: blur(0.7px);
+  z-index: 999;
+  background: rgba(255, 255, 255, 0.568627451);
+}
+#loading-spinner .loader::before {
+  top: 100px;
+}
+
+.rating-stars-noneZ {
+  font-size: 24px !important;
+  margin-left: 2px !important;
+  color: #ddd !important;
+  display: flex;
+}
+@media (max-width: 480px) {
+  .rating-stars-noneZ {
+    justify-content: center;
+  }
+}
+
+@keyframes glowAnimation {
+  0% {
+    stroke: #ddd; /* رنگ اولیه */
+  }
+  50% {
+    stroke: gold; /* رنگ طلایی */
+  }
+  100% {
+    stroke: #ddd; /* بازگشت به رنگ اولیه */
+  }
+}
+.lightAnimeSvg svg path {
+  animation: glowAnimation 2s infinite; /* انیمیشن در 2 ثانیه و به صورت لوپ */
+  transition: stroke 0.5s ease-in-out; /* انتقال نرم بین رنگ‌ها */
+}/*# sourceMappingURL=products-single.css.map */

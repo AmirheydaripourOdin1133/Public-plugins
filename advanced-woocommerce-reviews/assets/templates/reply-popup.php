@@ -1,0 +1,2 @@
+<div class="GeneralOverlay"></div>
+<div id="reply-popup" class="popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #fff; padding: 20px; border: 1px solid #ccc; z-index: 1000;"></div>
