@@ -2,9 +2,9 @@
 /*
 Plugin Name: Wholesale Pricing - افزونه سفارشی افزودن قیمت عمده
 
-Description: افزونه اختصاصی افزودن قابلیت قیمت گذاری عمده در ووکامرس - اضافه شئن قابلیت ویرایش قیمت محصول عمده Ajax - اضافه شدن مدیریت مشتریان عمده. 
+Description: افزونه اختصاصی افزودن قابلیت قیمت گذاری عمده در ووکامرس - اضافه شدن قابلیت ویرایش قیمت محصول عمده Ajax - اضافه شدن مدیریت مشتریان عمده.- Last Updete Plugins: Add Quick Edit Custom Box 
 
-Version: 1.1.0
+Version: 1.2.2
 
 Author: Amir Heydaripour , Amir.h.heydaripour22@gmail.com 
 
@@ -790,3 +790,63 @@ function show_both_regular_and_wholesale_prices($price, $product) {
     return $price;
 }
 
+
+// Updete Versions Plugins - Add Quick Edit Custom Box 
+// 
+
+// For Add Custom Filde To Quick Edit Parents
+add_action('quick_edit_custom_box', 'wp_quick_edit_wholesale_price_field', 11, 5);
+
+function wp_quick_edit_wholesale_price_field($column_name, $post_type) {
+    if ($column_name !== 'price' || $post_type !== 'product') {
+        return;
+    }
+    ?>
+    <fieldset class="inline-edit-col-right">
+        <div class="inline-edit-col">
+            <label class="inline-edit-group">
+                <span class="title"><?php _e('قیمت عمده', 'your-text-domain'); ?></span>
+                <input type="text" name="_wholesale_price" class="wholesale-price-field" value="">
+            </label>
+        </div>
+    </fieldset>
+    <?php
+}
+
+// For Save in Quick Edit
+add_action('save_post', 'wp_save_quick_edit_wholesale_price', 10, 2);
+
+function wp_save_quick_edit_wholesale_price($post_id, $post) {
+    if ($post->post_type !== 'product') {
+        return;
+    }
+
+    if (isset($_POST['_wholesale_price'])) {
+        $wholesale_price = sanitize_text_field($_POST['_wholesale_price']);
+        update_post_meta($post_id, '_wholesale_price', $wholesale_price);
+    }
+}
+
+// Add script for quick editing
+add_action('admin_enqueue_scripts', 'wp_enqueue_quick_edit_script');
+
+function wp_enqueue_quick_edit_script($hook) {
+    if ($hook !== 'edit.php') {
+        return;
+    }
+
+    wp_enqueue_script('wp-quick-edit-wholesale', plugin_dir_url(__FILE__) . 'js/quick-edit-wholesale.js', array('jquery'), null, true);
+}
+
+
+// Add a hidden column for wholesale price in the products table
+add_filter('manage_product_posts_custom_column', 'wp_add_wholesale_price_column', 10, 2);
+
+function wp_add_wholesale_price_column($column, $post_id) {
+    if ($column == 'price') {
+        $wholesale_price = get_post_meta($post_id, '_wholesale_price', true);
+
+        // افزودن قیمت عمده به صورت مخفی
+        echo '<div class="hidden" id="wholesale_price_' . $post_id . '">' . esc_attr($wholesale_price) . '</div>';
+    }
+}
