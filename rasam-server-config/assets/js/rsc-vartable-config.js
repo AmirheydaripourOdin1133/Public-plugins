@@ -172,6 +172,127 @@
 		return html;
 	}
 
+	function getVariationSpec(productTitle, variationName, variationLabel) {
+		var parent = decodeHtmlEntities(String(productTitle || '')).trim();
+		var label = decodeHtmlEntities(String(variationLabel || '')).trim();
+		var name = decodeHtmlEntities(String(variationName || '')).trim();
+		var spec = label || name;
+		if (!spec) {
+			return '';
+		}
+		if (parent && spec.indexOf(parent) === 0) {
+			spec = spec.slice(parent.length);
+		}
+		if (name && name !== parent && spec.indexOf(name) === 0) {
+			spec = spec.slice(name.length);
+		}
+		spec = spec.replace(/^[\s,،\-–—:|]+/, '');
+		spec = spec.replace(/سفارشی/g, '');
+		spec = spec.replace(/کانفیگ\s*پیشنهادی\s*[:：]?\s*/g, '');
+		spec = spec.replace(/کانفیگ\s*سفارشی\s*[:：]?\s*/g, '');
+		spec = spec.replace(/^[\s\-–—]+/, '').replace(/\s{2,}/g, ' ').trim();
+		return spec;
+	}
+
+	function buildProductConfigLine(productTitle, variationName, variationLabel) {
+		var base = decodeHtmlEntities(String(productTitle || '')).trim();
+		var spec = getVariationSpec(productTitle, variationName, variationLabel);
+		var cfgLabel = getI18n('configLabel') || 'کانفیگ';
+		if (!base) {
+			return spec;
+		}
+		if (!spec) {
+			return base;
+		}
+		if (/^کانفیگ\s*[:：]/.test(spec)) {
+			return base + ' - ' + spec;
+		}
+		return base + ' - ' + cfgLabel + ': ' + spec;
+	}
+
+	function buildPartsCompact(lines, compsById) {
+		var parts = [];
+		lines.forEach(function (ln) {
+			var c = compsById[ln.id];
+			if (!c) {
+				return;
+			}
+			parts.push(String(c.title) + ' × ' + ln.qty);
+		});
+		return parts.join('، ');
+	}
+
+	/**
+	 * همان قرارداد wc-request-quotation: قبل از «(» فقط عنوان محصول؛ داخل پرانتز کانفیگ پیش‌فرض + قطعات.
+	 */
+	function buildQuotationProductName(productTitle, variationSpec, lines, compsById) {
+		var title = decodeHtmlEntities(String(productTitle || '')).trim();
+		var sections = [];
+		var spec = String(variationSpec || '').trim();
+		if (spec) {
+			sections.push(spec);
+		}
+		var parts = buildPartsCompact(lines, compsById);
+		if (parts) {
+			parts = parts.replace(/،/g, ',');
+			var label = getI18n('addedPartsLabel') || 'قطعات اضافه';
+			sections.push(label + ': ' + parts);
+		}
+		if (!sections.length) {
+			return title;
+		}
+		return title + ' (' + sections.join(' / ') + ')';
+	}
+
+	function computePartsTotal(lines, compsById) {
+		var parts = 0;
+		lines.forEach(function (ln) {
+			var c = compsById[ln.id];
+			if (c) {
+				parts += (parseFloat(c.unit_price) || 0) * ln.qty;
+			}
+		});
+		return parts;
+	}
+
+	/**
+	 * متن ارسالی به پیش‌فاکتور (TCPDF + IRANYekan): حذف مارک‌های دوجهته و جداکننده‌هایی که گلیف ندارند.
+	 */
+	function sanitizeForRqPdf(str) {
+		if (str == null || str === '') {
+			return '';
+		}
+		var s = String(str);
+		s = s.replace(/[\u200e\u200f\u061c\u202a-\u202e\u2066-\u2069\u200b-\u200d\ufeff]/g, '');
+		s = s.replace(/[\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000]/g, ' ');
+		s = s.replace(/[\u2014\u2013\u2212\u2010\u2011]/g, '-');
+		s = s.replace(/\|/g, '/');
+		s = s.replace(/\s{2,}/g, ' ').trim();
+		return s;
+	}
+
+	/** هم‌راستا با wc-request-quotation: فیلدهای مخفی #wc-rq-* و باز کردن اورلی. */
+	function openWcRequestQuotationFromRsc(opts) {
+		if (typeof wc_rq_ajax === 'undefined' || typeof jQuery === 'undefined') {
+			return;
+		}
+		var $ = jQuery;
+		var variationId = parseInt(opts.variationId, 10) || 0;
+		var parentId = parseInt(opts.parentId, 10) || 0;
+		var fullName = opts.fullName || '';
+		var unitPrice = opts.unitPrice;
+		$('#wc-rq-is-variable').val(variationId > 0 ? '1' : '0');
+		var $pid = $('#wc-rq-product-id');
+		$pid.val(String(variationId > 0 ? variationId : parentId));
+		$pid.data('original-id', parentId);
+		$pid.data('variation-id', variationId > 0 ? String(variationId) : '');
+		$('#wc-rq-product-name').val(sanitizeForRqPdf(fullName));
+		$('#wc-rq-product-price').val(String(unitPrice));
+		$('#wc-rq-qty').val(1);
+		$('#noticFormsMy').text('').css({ color: '', 'font-size': '', 'margin-top': '' });
+		$('#wc-rq-popup-overlay').fadeIn(200);
+	}
+
 	function decodeHtmlEntities(str) {
 		if (str == null) {
 			return '';
@@ -302,28 +423,12 @@
 		$section.append($row);
 	}
 
-	function fillContextRow($summary, productTitle, variationName, variationLabel) {
+	function fillContextRow($summary, productConfigLine) {
 		var $p = $summary.find('[data-rsc-context-product]');
-		var $v = $summary.find('[data-rsc-context-variation]');
 		var $wrap = $summary.find('[data-rsc-context-variation-wrap]');
-		$p.text(decodeHtmlEntities(String(productTitle || '')) || '—');
-		var name = variationName && String(variationName).trim();
-		var attrs = variationLabel && String(variationLabel).trim();
-		var line = '';
-		if (name && attrs && name !== attrs) {
-			line = decodeHtmlEntities(name) + ' — ' + decodeHtmlEntities(attrs);
-		} else if (name) {
-			line = decodeHtmlEntities(name);
-		} else if (attrs) {
-			line = decodeHtmlEntities(attrs);
-		}
-		if (line) {
-			$v.text(line);
-			$wrap.show();
-		} else {
-			$v.text('');
-			$wrap.hide();
-		}
+		var line = productConfigLine && String(productConfigLine).trim();
+		$p.text(line || '—');
+		$wrap.hide();
 	}
 
 	function resetModalBody($modal) {
@@ -418,10 +523,18 @@
 			$body,
 			$summary
 		);
+		var cartSvg =
+			'<svg class="rsc-vt-modal__submit-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">' +
+			'<path d="M7.53657 21.25H7.54758" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>' +
+			'<path d="M17.9381 21.25H17.9491" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>' +
+			'<path d="M4.62838 6.52571H9.60334C12.3104 6.52571 15.0175 6.52571 17.7246 6.52571C18.2498 6.50271 18.7743 6.58341 19.2682 6.76318C19.5116 6.85995 19.73 7.01065 19.9069 7.20397C20.0837 7.39727 20.2145 7.62817 20.2893 7.87927C20.3493 8.45024 20.2761 9.02733 20.0756 9.56528C19.9449 10.1351 19.8263 10.7526 19.7075 11.275C19.4462 12.4624 19.1851 13.6497 18.9714 14.8371C18.9205 15.4101 18.7016 15.9553 18.3421 16.4043C18.1157 16.6114 17.8494 16.7699 17.5594 16.8699C17.2693 16.9699 16.962 17.0095 16.6561 16.986C15.6349 16.986 14.602 16.986 13.569 16.986H9.80509C9.25234 17.0394 8.69568 17.0394 8.14288 16.986C7.8537 16.9546 7.5781 16.8469 7.34439 16.6736C7.11069 16.5004 6.9273 16.2681 6.81307 16.0006C6.61691 15.3381 6.46226 14.6639 6.35001 13.9822C6.25503 13.4478 6.13629 12.9136 6.01756 12.3793C5.60199 10.3964 5.12706 8.43731 4.62838 6.52571ZM4.62838 6.52571C4.31967 5.26714 3.9991 4.00857 3.69039 2.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>' +
+			'<path d="M19.5531 11.9993H5.93447" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>' +
+			'</svg>';
 		var $btnSubmit = $(
 			'<button type="button" class="button button-primary rsc-vt-modal__submit" />'
 		).html(
-			'<span class="rsc-vt-modal__submit-label">' +
+			cartSvg +
+				'<span class="rsc-vt-modal__submit-label">' +
 				escapeHtml(getI18n('submitAddToCart')) +
 				'</span><span class="rsc-vt-modal__submit-spinner" aria-hidden="true"></span>'
 		);
@@ -429,7 +542,25 @@
 		var $btnReset = $('<button type="button" class="rsc-vt-modal__reset" />').text(
 			getI18n('resetSelection')
 		);
-		var $actions = $('<div class="rsc-vt-modal__foot-actions" />').append($btnSubmit);
+		var $btnQuotation = null;
+		if (typeof wc_rq_ajax !== 'undefined') {
+			var rqSvg =
+				'<svg class="rsc-vt-modal__quotation-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">' +
+				'<path d="M14.186 2.753v3.596c0 .487.194.955.54 1.3a1.85 1.85 0 0 0 1.306.539h4.125" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>' +
+				'<path d="M20.25 8.568v8.568a4.25 4.25 0 0 1-1.362 2.97 4.28 4.28 0 0 1-3.072 1.14h-7.59a4.3 4.3 0 0 1-3.1-1.124 4.26 4.26 0 0 1-1.376-2.986V6.862a4.25 4.25 0 0 1 1.362-2.97 4.28 4.28 0 0 1 3.072-1.14h5.714a3.5 3.5 0 0 1 2.361.905l2.96 2.722a2.97 2.97 0 0 1 1.031 2.189" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>' +
+				'<path d="M12 17.273v-6.774" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"></path>' +
+				'<path d="m8.894 14.42 2.665 2.666a.62.62 0 0 0 .882 0l2.665-2.665" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>' +
+				'</svg>';
+			$btnQuotation = $('<button type="button" class="rsc-vt-modal__quotation" />').html(
+				rqSvg + '<span class="rsc-vt-modal__quotation-label">' + escapeHtml(getI18n('requestQuotation')) + '</span>'
+			);
+			$btnQuotation.prop('disabled', true);
+		}
+		var $actions = $('<div class="rsc-vt-modal__foot-actions" />');
+		$actions.append($btnSubmit);
+		if ($btnQuotation) {
+			$actions.append($btnQuotation);
+		}
 		$foot.append($btnReset, $actions);
 		$modal.append($foot);
 		$overlay.append($modal);
@@ -466,19 +597,25 @@
 		var fixedPrice = 0;
 		var compsById = {};
 		var componentCount = 0;
+		var productConfigLineForRq = '';
+		var productTitleForRq = '';
+		var variationSpecForRq = '';
 		var transitionMs = prefersReducedMotion ? 0 : 220;
 
 		function modalMayDismiss() {
 			return !$btnSubmit.hasClass('is-loading');
 		}
 
-		function animateRemove() {
+		function animateRemove(onDone) {
 			$(document).off('keydown.rscVtModal');
 			$modal.off();
 			$overlay.removeClass('is-visible');
 			setTimeout(function () {
 				$overlay.remove();
 				rscVtUnlockScroll();
+				if (typeof onDone === 'function') {
+					onDone();
+				}
 			}, transitionMs);
 		}
 
@@ -542,12 +679,22 @@
 				fixedPrice = parseFloat(res.data.fixed_price) || 0;
 				compsById = buildCompsById(groups);
 				componentCount = Object.keys(compsById).length;
-				fillContextRow(
-					$summary,
-					res.data.product_title,
-					res.data.variation_name || '',
-					res.data.variation_label || ''
-				);
+				productTitleForRq = res.data.product_title || '';
+				variationSpecForRq =
+					res.data.variation_spec ||
+					getVariationSpec(
+						res.data.product_title,
+						res.data.variation_name || '',
+						res.data.variation_label || ''
+					);
+				productConfigLineForRq =
+					res.data.product_config_line ||
+					buildProductConfigLine(
+						res.data.product_title,
+						res.data.variation_name || '',
+						res.data.variation_label || ''
+					);
+				fillContextRow($summary, productConfigLineForRq);
 
 				$body.empty();
 				clearValidationError();
@@ -645,11 +792,64 @@
 
 				updateLiveSummary($modal, fixedPrice, compsById);
 				$btnSubmit.prop('disabled', false);
+				if ($btnQuotation) {
+					$btnQuotation.prop('disabled', false);
+				}
 			})
 			.fail(function () {
 				$err.text(getI18n('loadError')).addClass('is-visible');
 				$body.empty();
 			});
+
+		if ($btnQuotation) {
+			$btnQuotation.on('click', function (e) {
+				e.preventDefault();
+				if ($btnQuotation.prop('disabled') || $btnSubmit.prop('disabled')) {
+					return;
+				}
+				if (hasInvalidMultiLine($modal)) {
+					$err.text(getI18n('validationSelectModel')).addClass('is-visible');
+					var $eb = $err[0];
+					if ($eb && $eb.scrollIntoView) {
+						$eb.scrollIntoView({ block: 'nearest', behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+					}
+					return;
+				}
+				var linesRq = collectLines($modal);
+				if (componentCount > 0 && linesRq.length === 0) {
+					$err.text(getI18n('validationNeedPart')).addClass('is-visible');
+					var $eb2 = $err[0];
+					if ($eb2 && $eb2.scrollIntoView) {
+						$eb2.scrollIntoView({ block: 'nearest', behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+					}
+					return;
+				}
+				var $hiddenRq = getHiddenInput($form);
+				if (linesRq.length) {
+					$hiddenRq.val(JSON.stringify(linesRq));
+				} else {
+					$hiddenRq.val('');
+				}
+				var fullName = buildQuotationProductName(
+					productTitleForRq,
+					variationSpecForRq,
+					linesRq,
+					compsById
+				);
+				var unitPrice = fixedPrice + computePartsTotal(linesRq, compsById);
+				if (isNaN(unitPrice)) {
+					unitPrice = 0;
+				}
+				animateRemove(function () {
+					openWcRequestQuotationFromRsc({
+						variationId: variationId,
+						parentId: (typeof rscVartable !== 'undefined' && rscVartable.productId) || 0,
+						fullName: fullName,
+						unitPrice: unitPrice
+					});
+				});
+			});
+		}
 
 		$btnSubmit.on('click', function () {
 			if ($btnSubmit.prop('disabled')) {
@@ -681,19 +881,26 @@
 			}
 
 			$btnSubmit.prop('disabled', true);
-			$modal.find('.rsc-vt-modal__reset, .rsc-vt-modal__close, .rsc-vt-summary__toggle').prop('disabled', true);
+			$modal
+				.find(
+					'.rsc-vt-modal__reset, .rsc-vt-modal__close, .rsc-vt-summary__toggle, .rsc-vt-modal__quotation'
+				)
+				.prop('disabled', true);
 			$btnSubmit.addClass('is-loading');
 			$btnSubmit.find('.rsc-vt-modal__submit-label').text(getI18n('adding'));
 
 			var $sub = $form.find('button[type="submit"]').first();
 			if ($sub.length) {
-				animateRemove();
-				setTimeout(function () {
+				animateRemove(function () {
 					$sub.trigger('click');
-				}, Math.max(0, transitionMs - 40));
+				});
 			} else {
 				$btnSubmit.prop('disabled', false);
-				$modal.find('.rsc-vt-modal__reset, .rsc-vt-modal__close, .rsc-vt-summary__toggle').prop('disabled', false);
+				$modal
+					.find(
+						'.rsc-vt-modal__reset, .rsc-vt-modal__close, .rsc-vt-summary__toggle, .rsc-vt-modal__quotation'
+					)
+					.prop('disabled', false);
 				$btnSubmit.removeClass('is-loading');
 				$btnSubmit.find('.rsc-vt-modal__submit-label').text(getI18n('submitAddToCart'));
 			}

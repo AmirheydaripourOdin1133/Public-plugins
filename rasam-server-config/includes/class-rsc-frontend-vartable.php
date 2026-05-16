@@ -37,6 +37,7 @@ final class RSC_Frontend_Vartable {
 
 	private function __construct() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue' ), 30 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_cart_styles' ), 31 );
 		add_action( 'wp_ajax_rsc_variation_config_payload', array( $this, 'ajax_config_payload' ) );
 		add_action( 'wp_ajax_nopriv_rsc_variation_config_payload', array( $this, 'ajax_config_payload' ) );
 
@@ -107,40 +108,6 @@ final class RSC_Frontend_Vartable {
 		return $keys;
 	}
 
-	/**
-	 * خلاصهٔ خطوط انتخاب قطعه، گروه‌بندی‌شده بر اساس نام تاکسونومی «نوع قطعه».
-	 *
-	 * @param array<int, array<string, mixed>> $lines آرایهٔ { id, qty }.
-	 */
-	private function format_config_lines_grouped( array $lines ) {
-		$groups = array();
-		foreach ( $lines as $row ) {
-			if ( ! is_array( $row ) || empty( $row['id'] ) || empty( $row['qty'] ) ) {
-				continue;
-			}
-			$id  = (int) $row['id'];
-			$qty = (int) $row['qty'];
-			$type_label = $this->decode_display_text( RSC_Component_Data::get_primary_type_label( $id ) );
-			if ( '' === $type_label ) {
-				$type_label = __( 'سایر قطعات', 'rasam-server-config' );
-			}
-			if ( ! isset( $groups[ $type_label ] ) ) {
-				$groups[ $type_label ] = array();
-			}
-			$groups[ $type_label ][] = sprintf(
-				/* translators: 1: part title, 2: quantity */
-				__( '%1$s × %2$d', 'rasam-server-config' ),
-				$this->decode_display_text( get_the_title( $id ) ),
-				$qty
-			);
-		}
-		$parts = array();
-		foreach ( $groups as $type_label => $items ) {
-			$parts[] = $type_label . ' — ' . implode( '، ', $items );
-		}
-		return implode( ' | ', $parts );
-	}
-
 	public function enqueue() {
 		if ( ! function_exists( 'is_product' ) || ! is_product() ) {
 			return;
@@ -163,14 +130,19 @@ final class RSC_Frontend_Vartable {
 
 		wp_enqueue_style(
 			'rsc-vartable-config',
-			RSC_PLUGIN_URL . 'assets/css/rsc-vartable-config.css',
+			RSC_PLUGIN_URL . 'assets/css/style-rsc-config.min.css',
 			array(),
 			RSC_VERSION
 		);
+		$script_deps = array( 'jquery' );
+		if ( wp_script_is( 'wc-rq-script', 'registered' ) ) {
+			$script_deps[] = 'wc-rq-script';
+		}
+
 		wp_enqueue_script(
 			'rsc-vartable-config',
 			RSC_PLUGIN_URL . 'assets/js/rsc-vartable-config.js',
-			array( 'jquery' ),
+			$script_deps,
 			RSC_VERSION,
 			true
 		);
@@ -200,6 +172,7 @@ final class RSC_Frontend_Vartable {
 					'modalTitle'           => __( 'محصول سفارشی', 'rasam-server-config' ),
 					'close'                => __( 'بستن', 'rasam-server-config' ),
 					'submitAddToCart'      => __( 'ثبت و افزودن به سبد خرید', 'rasam-server-config' ),
+					'requestQuotation'     => __( 'دریافت پیش‌فاکتور', 'rasam-server-config' ),
 					'adding'               => __( 'در حال افزودن…', 'rasam-server-config' ),
 					'loading'              => __( 'در حال بارگذاری…', 'rasam-server-config' ),
 					'loadError'            => __( 'خطا در دریافت لیست قطعات.', 'rasam-server-config' ),
@@ -223,8 +196,25 @@ final class RSC_Frontend_Vartable {
 					/* translators: %d: total quantity of selected add-on pieces */
 					'summaryLineCount'   => __( '%d واحد قطعهٔ اضافه', 'rasam-server-config' ),
 					'summaryAccordionZero' => __( 'بدون قطعهٔ اضافه', 'rasam-server-config' ),
+					'configLabel'          => __( 'کانفیگ', 'rasam-server-config' ),
+					'addedPartsLabel'      => __( 'قطعات اضافه', 'rasam-server-config' ),
 				),
 			)
+		);
+	}
+
+	/**
+	 * استایل خلاصهٔ کانفیگ در سبد و تسویه.
+	 */
+	public function enqueue_cart_styles() {
+		if ( ! function_exists( 'is_cart' ) || ( ! is_cart() && ! is_checkout() ) ) {
+			return;
+		}
+		wp_enqueue_style(
+			'rsc-vartable-config',
+			RSC_PLUGIN_URL . 'assets/css/style-rsc-config.min.css',
+			array(),
+			RSC_VERSION
 		);
 	}
 
@@ -350,13 +340,15 @@ final class RSC_Frontend_Vartable {
 
 		wp_send_json_success(
 			array(
-				'components'        => $components,
-				'groups'            => $groups,
-				'max_group_lines'   => self::MAX_GROUP_SELECTION_LINES,
-				'fixed_price'       => RSC_Variation_Data::get_wc_variation_price( $variation_id ),
-				'product_title'     => $product_title,
-				'variation_name'    => $variation_name,
-				'variation_label'   => $variation_label,
+				'components'          => $components,
+				'groups'              => $groups,
+				'max_group_lines'     => self::MAX_GROUP_SELECTION_LINES,
+				'fixed_price'         => RSC_Variation_Data::get_wc_variation_price( $variation_id ),
+				'product_title'       => $product_title,
+				'variation_name'      => $variation_name,
+				'variation_label'     => $variation_label,
+				'product_config_line' => RSC_Display_Text::build_product_config_line( $product_title, $variation_name, $variation_label ),
+				'variation_spec'      => RSC_Display_Text::get_variation_spec( $product_title, $variation_name, $variation_label ),
 			)
 		);
 	}
@@ -506,24 +498,23 @@ final class RSC_Frontend_Vartable {
 		if ( empty( $filtered ) ) {
 			return;
 		}
-		$item->add_meta_data(
-			__( 'محصول سفارشی', 'rasam-server-config' ),
-			$this->format_config_lines_grouped( $filtered ),
-			false
-		);
-		if ( $variation_id > 0 ) {
-			$line_qty = isset( $values['quantity'] ) ? max( 1, (int) $values['quantity'] ) : 1;
-			$res      = RSC_Variation_Data::calculate_totals( $variation_id, $filtered );
-			$item->add_meta_data(
-				__( 'قیمت پایه ', 'rasam-server-config' ),
-				wc_price( (float) $res['fixed'] * $line_qty ),
-				false
+		$parent_id = RSC_Variation_Data::get_variation_parent_product_id( $variation_id );
+		$product_title   = $parent_id > 0 ? $this->decode_display_text( get_the_title( $parent_id ) ) : '';
+		$variation_name  = $this->decode_display_text( get_the_title( $variation_id ) );
+		$variation_label = '';
+		$variation_obj   = wc_get_product( $variation_id );
+		if ( $variation_obj && $variation_obj->is_type( 'variation' ) ) {
+			$variation_label = $this->decode_display_text(
+				wc_get_formatted_variation( $variation_obj, true, true, false )
 			);
-			$item->add_meta_data(
-				__( 'قطعات اضافه', 'rasam-server-config' ),
-				wc_price( (float) $res['parts'] * $line_qty ),
-				false
-			);
+		}
+		$config_line = RSC_Display_Text::build_product_config_line( $product_title, $variation_name, $variation_label );
+		if ( '' !== $config_line ) {
+			$item->add_meta_data( __( 'کانفیگ', 'rasam-server-config' ), $config_line, false );
+		}
+		$parts_text = RSC_Display_Text::format_parts_compact( $filtered );
+		if ( '' !== $parts_text ) {
+			$item->add_meta_data( __( 'قطعات اضافه', 'rasam-server-config' ), $parts_text, false );
 		}
 	}
 
@@ -550,16 +541,15 @@ final class RSC_Frontend_Vartable {
 		$res      = RSC_Variation_Data::calculate_totals( $vid, $decoded );
 
 		$item_data[] = array(
-			'name'  => __( 'محصول سفارشی', 'rasam-server-config' ),
-			'value' => $this->format_config_lines_grouped( $decoded ),
-		);
-		$item_data[] = array(
-			'name'  => __( 'قیمت پایه ', 'rasam-server-config' ),
-			'value' => wc_price( (float) $res['fixed'] * $line_qty ),
-		);
-		$item_data[] = array(
-			'name'  => __( 'قطعات اضافه ', 'rasam-server-config' ),
-			'value' => wc_price( (float) $res['parts'] * $line_qty ),
+			'key'     => '',
+			'name'    => '',
+			'value'   => '',
+			'display' => RSC_Display_Text::format_cart_meta_html(
+				$decoded,
+				(float) $res['fixed'],
+				(float) $res['parts'],
+				$line_qty
+			),
 		);
 		return $item_data;
 	}

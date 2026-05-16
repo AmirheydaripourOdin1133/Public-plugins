@@ -113,6 +113,8 @@ final class RSC_Plugin {
 		require_once RSC_PLUGIN_DIR . 'includes/class-rsc-component-data.php';
 		require_once RSC_PLUGIN_DIR . 'includes/class-rsc-product-allowlist-acf.php';
 		require_once RSC_PLUGIN_DIR . 'includes/class-rsc-variation-data.php';
+		require_once RSC_PLUGIN_DIR . 'includes/class-rsc-display-text.php';
+		require_once RSC_PLUGIN_DIR . 'includes/class-rsc-admin-filters.php';
 		require_once RSC_PLUGIN_DIR . 'includes/engine/class-rsc-price-engine.php';
 		require_once RSC_PLUGIN_DIR . 'includes/class-rsc-frontend-vartable.php';
 	}
@@ -125,6 +127,7 @@ final class RSC_Plugin {
 		RSC_Product_Allowlist_ACF::instance();
 		if ( class_exists( 'WooCommerce', false ) ) {
 			RSC_Frontend_Vartable::instance();
+			RSC_Admin_Filters::instance();
 		}
 	}
 
