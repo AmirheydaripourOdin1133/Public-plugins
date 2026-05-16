@@ -1,0 +1,113 @@
+{
+    "key": "group_rsc_product_allowlist",
+    "title": "رسام — قطعات قابل شخصی‌سازی (به‌ازای وریشن)",
+    "fields": [
+        {
+            "key": "field_rsc_pva_rows",
+            "label": "قوانین وریشن",
+            "name": "rsc_pva_rows",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "برای هر وریشنی که باید در فروشگاه شخصی‌سازی شود، یک ردیف اضافه کنید: وریشن را انتخاب کنید، سپس قطعاتی را که مشتری می‌تواند انتخاب کند مشخص کنید. با دکمهٔ «به‌روزرسانی» همین صفحهٔ محصول ذخیره می‌شود (نه فقط ذخیرهٔ سریع متغیرها). اگر وریشنی در اینجا نباشد یا لیست قطعاتش خالی باشد، آن وریشن قابل شخصی‌سازی نیست.",
+            "required": 0,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "block",
+            "pagination": 0,
+            "min": 0,
+            "max": 0,
+            "collapsed": "field_rsc_pva_variation",
+            "button_label": "افزودن وریشن",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_rsc_pva_variation",
+                    "label": "وریشن",
+                    "name": "rsc_pva_variation",
+                    "aria-label": "",
+                    "type": "post_object",
+                    "instructions": "فقط وریشن‌های همین محصول در لیست می‌آیند.",
+                    "required": 1,
+                    "conditional_logic": false,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "post_type": [
+                        "product_variation"
+                    ],
+                    "post_status": [
+                        "publish",
+                        "private"
+                    ],
+                    "taxonomy": [],
+                    "return_format": "id",
+                    "multiple": 0,
+                    "allow_null": 0,
+                    "ui": 1,
+                    "bidirectional": 0,
+                    "bidirectional_target": [],
+                    "parent_repeater": "field_rsc_pva_rows"
+                },
+                {
+                    "key": "field_rsc_pva_components",
+                    "label": "قطعات قابل انتخاب",
+                    "name": "rsc_pva_components",
+                    "aria-label": "",
+                    "type": "relationship",
+                    "instructions": "جستجو کنید و حداقل یک قطعه انتخاب کنید؛ بدون قطعه این ردیف ذخیره نمی‌شود.",
+                    "required": 1,
+                    "conditional_logic": false,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "post_type": [
+                        "server_component"
+                    ],
+                    "taxonomy": [],
+                    "filters": [
+                        "search"
+                    ],
+                    "elements": [],
+                    "min": 1,
+                    "max": 0,
+                    "return_format": "id",
+                    "bidirectional": 0,
+                    "bidirectional_target": [],
+                    "parent_repeater": "field_rsc_pva_rows"
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "product"
+            },
+            {
+                "param": "post_taxonomy",
+                "operator": "==",
+                "value": "product_type:variable"
+            }
+        ]
+    ],
+    "menu_order": 8,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1778607000
+}

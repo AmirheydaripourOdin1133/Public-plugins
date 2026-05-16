@@ -1,0 +1,88 @@
+{
+    "key": "group_rsc_server_component",
+    "title": "قطعه سرور (رسام)",
+    "fields": [
+        {
+            "key": "field_rsc_unit_price",
+            "label": "قیمت واحد (تومان)",
+            "name": "rsc_unit_price",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "برای موتور قیمت‌گذاری؛ عدد صحیح تومان.",
+            "required": 1,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "min": 0,
+            "max": "",
+            "placeholder": "",
+            "step": 1,
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_rsc_internal_sku",
+            "label": "کد داخلی",
+            "name": "rsc_internal_sku",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "اختیاری؛ برای گزارش و پیش‌فاکتور.",
+            "required": 0,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_rsc_upgrade_family",
+            "label": "خانواده ارتقا",
+            "name": "rsc_upgrade_family",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "شناسهٔ یکسان برای قطعاتی که در مدل swap با هم جایگزین می‌شوند.",
+            "required": 0,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "34",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "server_component"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 1,
+    "display_title": "",
+    "modified": 1746950400
+}
