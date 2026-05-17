@@ -222,26 +222,113 @@
 		return parts.join('، ');
 	}
 
+	/** ASCII hyphen — TCPDF/IRANYekan گلیف em-dash (—) ندارد. */
+	var QUOTATION_CONFIG_SEP = ' - ';
+
+	function stripRtlScript(text) {
+		var s = String(text == null ? '' : text);
+		if (!s) {
+			return '';
+		}
+		s = s.replace(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]+/g, '');
+		s = s.replace(/[،؍؛؟«»]+/g, '');
+		s = s.replace(/\s{2,}/g, ' ').trim();
+		s = s.replace(/^[\s,;:\/\-–—|]+|[\s,;:\/\-–—|]+$/g, '');
+		return s;
+	}
+
+	function splitQuotationConfigItems(spec) {
+		spec = stripRtlScript(spec);
+		if (!spec) {
+			return [];
+		}
+		return spec
+			.split(/\s*[,،\/|]+\s*|\s+[\-–—]\s+/)
+			.map(function (chunk) {
+				return chunk.trim();
+			})
+			.filter(function (chunk) {
+				return chunk !== '';
+			});
+	}
+
+	function implodeQuotationConfigItems(items) {
+		return items
+			.map(function (item) {
+				return String(item || '').trim();
+			})
+			.filter(function (item) {
+				return item !== '';
+			})
+			.join(QUOTATION_CONFIG_SEP);
+	}
+
+	function normalizeQuotationConfigBlob(configRaw) {
+		var s = String(configRaw == null ? '' : configRaw).trim();
+		if (!s) {
+			return '';
+		}
+		s = s.replace(/[\u2014\u2013\u2212]/g, '-');
+		var labels = [
+			'قطعات\\s*اضافه',
+			'اضافه\\s*قطعات',
+			'کانفیگ\\s*پیشنهادی',
+			'کانفیگ\\s*سفارشی',
+			'کانفیگ'
+		];
+		labels.forEach(function (label) {
+			s = s.replace(new RegExp('[\\s\\/|]*' + label + '[\\s\\/|]*[:：]?[\\s\\/|]*', 'gi'), QUOTATION_CONFIG_SEP);
+		});
+		s = s.replace(/\s*\/\s*/g, QUOTATION_CONFIG_SEP);
+		s = s.replace(/\s*[:：]+\s*/g, ' ');
+		return implodeQuotationConfigItems(splitQuotationConfigItems(s));
+	}
+
+	/** ستون کانفیگ پیش‌فاکتور: فقط لاتین، وریشن سپس قطعات، با «—». */
+	function buildQuotationConfigText(variationSpec, lines, compsById) {
+		var items = splitQuotationConfigItems(variationSpec);
+		lines.forEach(function (ln) {
+			var c = compsById[ln.id];
+			if (!c) {
+				return;
+			}
+			var part = stripRtlScript(String(c.title) + ' × ' + ln.qty);
+			if (part) {
+				items.push(part);
+			}
+		});
+		return implodeQuotationConfigItems(items);
+	}
+
+	function normalizeQuotationProductName(productName) {
+		var name = String(productName == null ? '' : productName).trim();
+		if (!name) {
+			return '';
+		}
+		var title = name;
+		var configRaw = '';
+		var paren = name.indexOf('(');
+		if (paren !== -1) {
+			title = name.slice(0, paren).trim();
+			configRaw = name.slice(paren + 1).replace(/\)\s*$/, '').trim();
+		}
+		var config = normalizeQuotationConfigBlob(configRaw);
+		if (!config) {
+			return title;
+		}
+		return title + ' (' + config + ')';
+	}
+
 	/**
-	 * همان قرارداد wc-request-quotation: قبل از «(» فقط عنوان محصول؛ داخل پرانتز کانفیگ پیش‌فرض + قطعات.
+	 * همان قرارداد wc-request-quotation: قبل از «(» فقط عنوان محصول؛ داخل پرانتز کانفیگ لاتین.
 	 */
 	function buildQuotationProductName(productTitle, variationSpec, lines, compsById) {
 		var title = decodeHtmlEntities(String(productTitle || '')).trim();
-		var sections = [];
-		var spec = String(variationSpec || '').trim();
-		if (spec) {
-			sections.push(spec);
-		}
-		var parts = buildPartsCompact(lines, compsById);
-		if (parts) {
-			parts = parts.replace(/،/g, ',');
-			var label = getI18n('addedPartsLabel') || 'قطعات اضافه';
-			sections.push(label + ': ' + parts);
-		}
-		if (!sections.length) {
+		var config = buildQuotationConfigText(variationSpec, lines, compsById);
+		if (!config) {
 			return title;
 		}
-		return title + ' (' + sections.join(' / ') + ')';
+		return normalizeQuotationProductName(title + ' (' + config + ')');
 	}
 
 	function computePartsTotal(lines, compsById) {
@@ -286,7 +373,7 @@
 		$pid.val(String(variationId > 0 ? variationId : parentId));
 		$pid.data('original-id', parentId);
 		$pid.data('variation-id', variationId > 0 ? String(variationId) : '');
-		$('#wc-rq-product-name').val(sanitizeForRqPdf(fullName));
+		$('#wc-rq-product-name').val(sanitizeForRqPdf(normalizeQuotationProductName(fullName)));
 		$('#wc-rq-product-price').val(String(unitPrice));
 		$('#wc-rq-qty').val(1);
 		$('#noticFormsMy').text('').css({ color: '', 'font-size': '', 'margin-top': '' });

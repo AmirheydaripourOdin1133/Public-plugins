@@ -44,6 +44,9 @@ final class RSC_Frontend_Vartable {
 		add_action( 'wp_ajax_add_variation_to_cart', array( $this, 'stash_config_before_vartable_cart' ), 5 );
 		add_action( 'wp_ajax_nopriv_add_variation_to_cart', array( $this, 'stash_config_before_vartable_cart' ), 5 );
 
+		add_action( 'wp_ajax_wc_rq_submit_form', array( $this, 'sanitize_rq_product_name_post' ), 0 );
+		add_action( 'wp_ajax_nopriv_wc_rq_submit_form', array( $this, 'sanitize_rq_product_name_post' ), 0 );
+
 		/** همان نقطهٔ افزونهٔ vartable / wc-request-quotation؛ آرگومان دوم = دادهٔ ردیف وریشن. */
 		add_action( 'woocommerce_after_add_to_cart_button', array( $this, 'render_configure_button' ), 25, 2 );
 
@@ -53,6 +56,7 @@ final class RSC_Frontend_Vartable {
 		add_filter( 'woocommerce_get_item_data', array( $this, 'display_config_in_cart' ), 10, 2 );
 		add_action( 'woocommerce_checkout_create_order_line_item', array( $this, 'copy_rsc_lines_to_order_item' ), 10, 4 );
 		add_filter( 'woocommerce_hidden_order_itemmeta', array( $this, 'hide_internal_rsc_order_meta' ) );
+		add_filter( 'woocommerce_order_item_display_meta_key', array( $this, 'filter_order_item_meta_display_key' ), 10, 3 );
 	}
 
 	/**
@@ -104,8 +108,28 @@ final class RSC_Frontend_Vartable {
 		if ( ! is_array( $keys ) ) {
 			return $keys;
 		}
-		$keys[] = '_rsc_lines_json';
+		$keys[] = RSC_Order_Item_Meta::LINES_JSON;
+		foreach ( RSC_Order_Item_Meta::legacy_meta_keys() as $legacy_key ) {
+			$keys[] = $legacy_key;
+		}
 		return $keys;
+	}
+
+	/**
+	 * برچسب فارسی برای کلیدهای ثابت رسام در جزئیات سفارش.
+	 *
+	 * @param string              $display_key
+	 * @param WC_Meta_Data        $meta
+	 * @param WC_Order_Item_Product $item
+	 * @return string
+	 */
+	public function filter_order_item_meta_display_key( $display_key, $meta, $item ) {
+		unset( $item );
+		if ( ! $meta instanceof WC_Meta_Data ) {
+			return $display_key;
+		}
+		$label = RSC_Order_Item_Meta::get_display_label( $meta->key );
+		return null !== $label ? $label : $display_key;
 	}
 
 	public function enqueue() {
@@ -354,6 +378,17 @@ final class RSC_Frontend_Vartable {
 	}
 
 	/**
+	 * قبل از wc-request-quotation: ستون کانفیگ فقط لاتین و بدون برچسب «قطعات اضافه».
+	 */
+	public function sanitize_rq_product_name_post() {
+		if ( empty( $_POST['product_name'] ) || ! is_string( $_POST['product_name'] ) ) {
+			return;
+		}
+		$raw = wp_unslash( $_POST['product_name'] );
+		$_POST['product_name'] = RSC_Display_Text::normalize_quotation_product_name( $raw );
+	}
+
+	/**
 	 * قبل از هندلر vartable، JSON پیکربندی را در سشن می‌گذاریم (درخواست AJAX فقط فیلدهای محدود می‌فرستد).
 	 */
 	public function stash_config_before_vartable_cart() {
@@ -486,35 +521,39 @@ final class RSC_Frontend_Vartable {
 		if ( empty( $values['rsc_lines'] ) || ! is_string( $values['rsc_lines'] ) ) {
 			return;
 		}
-		$item->add_meta_data( '_rsc_lines_json', $values['rsc_lines'], true );
+		$item->add_meta_data( RSC_Order_Item_Meta::LINES_JSON, $values['rsc_lines'], true );
+
+		$variation_id = isset( $values['variation_id'] ) ? (int) $values['variation_id'] : 0;
+		if ( $variation_id > 0 ) {
+			$parent_id = RSC_Variation_Data::get_variation_parent_product_id( $variation_id );
+			$product_title   = $parent_id > 0 ? $this->decode_display_text( get_the_title( $parent_id ) ) : '';
+			$variation_name  = $this->decode_display_text( get_the_title( $variation_id ) );
+			$variation_label = '';
+			$variation_obj   = wc_get_product( $variation_id );
+			if ( $variation_obj && $variation_obj->is_type( 'variation' ) ) {
+				$variation_label = $this->decode_display_text(
+					wc_get_formatted_variation( $variation_obj, true, true, false )
+				);
+			}
+			$base_spec = RSC_Display_Text::get_variation_spec( $product_title, $variation_name, $variation_label );
+			if ( '' !== $base_spec ) {
+				$item->add_meta_data( RSC_Order_Item_Meta::BASE_CONFIG, $base_spec, false );
+			}
+		}
+
 		$decoded = json_decode( $values['rsc_lines'], true );
 		if ( ! is_array( $decoded ) || empty( $decoded ) ) {
 			return;
 		}
-		$variation_id = isset( $values['variation_id'] ) ? (int) $values['variation_id'] : 0;
-		$filtered     = $variation_id > 0
+		$filtered = $variation_id > 0
 			? RSC_Variation_Data::filter_selection_to_allowed( $variation_id, $decoded )
 			: array();
 		if ( empty( $filtered ) ) {
 			return;
 		}
-		$parent_id = RSC_Variation_Data::get_variation_parent_product_id( $variation_id );
-		$product_title   = $parent_id > 0 ? $this->decode_display_text( get_the_title( $parent_id ) ) : '';
-		$variation_name  = $this->decode_display_text( get_the_title( $variation_id ) );
-		$variation_label = '';
-		$variation_obj   = wc_get_product( $variation_id );
-		if ( $variation_obj && $variation_obj->is_type( 'variation' ) ) {
-			$variation_label = $this->decode_display_text(
-				wc_get_formatted_variation( $variation_obj, true, true, false )
-			);
-		}
-		$config_line = RSC_Display_Text::build_product_config_line( $product_title, $variation_name, $variation_label );
-		if ( '' !== $config_line ) {
-			$item->add_meta_data( __( 'کانفیگ', 'rasam-server-config' ), $config_line, false );
-		}
 		$parts_text = RSC_Display_Text::format_parts_compact( $filtered );
 		if ( '' !== $parts_text ) {
-			$item->add_meta_data( __( 'قطعات اضافه', 'rasam-server-config' ), $parts_text, false );
+			$item->add_meta_data( RSC_Order_Item_Meta::CUSTOM_PARTS, $parts_text, false );
 		}
 	}
 

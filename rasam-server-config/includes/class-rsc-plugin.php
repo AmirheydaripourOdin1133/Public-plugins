@@ -114,6 +114,7 @@ final class RSC_Plugin {
 		require_once RSC_PLUGIN_DIR . 'includes/class-rsc-product-allowlist-acf.php';
 		require_once RSC_PLUGIN_DIR . 'includes/class-rsc-variation-data.php';
 		require_once RSC_PLUGIN_DIR . 'includes/class-rsc-display-text.php';
+		require_once RSC_PLUGIN_DIR . 'includes/class-rsc-order-item-meta.php';
 		require_once RSC_PLUGIN_DIR . 'includes/class-rsc-admin-filters.php';
 		require_once RSC_PLUGIN_DIR . 'includes/engine/class-rsc-price-engine.php';
 		require_once RSC_PLUGIN_DIR . 'includes/class-rsc-frontend-vartable.php';

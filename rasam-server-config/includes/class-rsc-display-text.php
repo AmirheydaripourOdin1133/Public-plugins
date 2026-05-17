@@ -11,6 +11,145 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 final class RSC_Display_Text {
 
+	/** جداکنندهٔ آیتم‌های کانفیگ در پیش‌فاکتور (ASCII؛ سازگار با TCPDF/IRANYekan). */
+	private const QUOTATION_CONFIG_SEP = ' - ';
+
+	/**
+	 * حذف حروف و علائم فارسی/عربی برای ستون کانفیگ پیش‌فاکتور.
+	 *
+	 * @param string $text
+	 * @return string
+	 */
+	public static function strip_rtl_script( $text ) {
+		$text = (string) $text;
+		if ( '' === $text ) {
+			return '';
+		}
+		$text = preg_replace( '/[\x{0600}-\x{06FF}\x{0750}-\x{077F}\x{08A0}-\x{08FF}\x{FB50}-\x{FDFF}\x{FE70}-\x{FEFF}]+/u', '', $text );
+		$text = preg_replace( '/[،؍؛؟«»]+/u', '', $text );
+		$text = preg_replace( '/\s{2,}/u', ' ', trim( $text ) );
+		$text = preg_replace( '/^[\s,;:\/\-–—|]+|[\s,;:\/\-–—|]+$/u', '', $text );
+		return $text;
+	}
+
+	/**
+	 * @param string $spec مشخصات وریشن (پس از get_variation_spec).
+	 * @return string[]
+	 */
+	private static function split_quotation_config_items( $spec ) {
+		$spec = self::strip_rtl_script( $spec );
+		if ( '' === $spec ) {
+			return array();
+		}
+		$chunks = preg_split( '/\s*[,،\/|]+\s*|\s+[\-–—]\s+/u', $spec );
+		$items  = array();
+		foreach ( $chunks as $chunk ) {
+			$chunk = trim( $chunk );
+			if ( '' !== $chunk ) {
+				$items[] = $chunk;
+			}
+		}
+		return $items;
+	}
+
+	/**
+	 * متن ستون «کانفیگ» پیش‌فاکتور: فقط لاتین، آیتم‌های وریشن سپس قطعات، با «—».
+	 *
+	 * @param string                            $variation_spec
+	 * @param array<int, array{id:int,qty:int}> $lines
+	 * @return string
+	 */
+	public static function build_quotation_config_text( $variation_spec, array $lines ) {
+		$items = self::split_quotation_config_items( $variation_spec );
+		foreach ( self::collect_part_lines( $lines ) as $part ) {
+			$clean = self::strip_rtl_script( $part );
+			if ( '' !== $clean ) {
+				$items[] = $clean;
+			}
+		}
+		return self::implode_quotation_config_items( $items );
+	}
+
+	/**
+	 * @param string[] $items
+	 * @return string
+	 */
+	private static function implode_quotation_config_items( array $items ) {
+		$items = array_values(
+			array_filter(
+				array_map( 'trim', $items ),
+				static function ( $item ) {
+					return '' !== $item;
+				}
+			)
+		);
+		if ( empty( $items ) ) {
+			return '';
+		}
+		return implode( self::QUOTATION_CONFIG_SEP, $items );
+	}
+
+	/**
+	 * حذف برچسب‌های فارسی و یکسان‌سازی جداکننده‌ها در بلوک کانفیگ (فرمت قدیمی یا جدید).
+	 *
+	 * @param string $config_raw
+	 * @return string
+	 */
+	public static function normalize_quotation_config_blob( $config_raw ) {
+		$config_raw = trim( (string) $config_raw );
+		if ( '' === $config_raw ) {
+			return '';
+		}
+
+		$config_raw = str_replace( array( '—', '–', '−' ), '-', $config_raw );
+
+		$labels = array(
+			'قطعات\s*اضافه',
+			'اضافه\s*قطعات',
+			'کانفیگ\s*پیشنهادی',
+			'کانفیگ\s*سفارشی',
+			'کانفیگ',
+		);
+		foreach ( $labels as $label ) {
+			$config_raw = preg_replace(
+				'/[\s\/|]*' . $label . '[\s\/|]*[:：]?[\s\/|]*/ui',
+				self::QUOTATION_CONFIG_SEP,
+				$config_raw
+			);
+		}
+		$config_raw = preg_replace( '/\s*\/\s*/u', self::QUOTATION_CONFIG_SEP, $config_raw );
+		$config_raw = preg_replace( '/\s*[:：]+\s*/u', ' ', $config_raw );
+
+		return self::implode_quotation_config_items( self::split_quotation_config_items( $config_raw ) );
+	}
+
+	/**
+	 * پاک‌سازی نام ارسالی به پیش‌فاکتور (حتی اگر JS قدیمی یا کش مانده باشد).
+	 *
+	 * @param string $product_name
+	 * @return string
+	 */
+	public static function normalize_quotation_product_name( $product_name ) {
+		$product_name = trim( (string) $product_name );
+		if ( '' === $product_name ) {
+			return '';
+		}
+
+		$title      = $product_name;
+		$config_raw = '';
+		if ( false !== strpos( $product_name, '(' ) ) {
+			$name_parts = explode( '(', $product_name, 2 );
+			$title      = trim( $name_parts[0] );
+			$config_raw = isset( $name_parts[1] ) ? rtrim( trim( $name_parts[1] ), ')' ) : '';
+		}
+
+		$config = self::normalize_quotation_config_blob( $config_raw );
+		if ( '' === $config ) {
+			return $title;
+		}
+		return $title . ' (' . $config . ')';
+	}
+
 	/**
 	 * متن ویژگی‌های وریشن بدون تکرار نام محصول و «سفارشی».
 	 *
@@ -133,20 +272,13 @@ final class RSC_Display_Text {
 	 * @return string
 	 */
 	public static function build_quotation_product_name( $product_title, $variation_name, $variation_label, array $lines ) {
-		$title    = trim( (string) $product_title );
-		$sections = array();
-		$spec     = self::get_variation_spec( $product_title, $variation_name, $variation_label );
-		if ( '' !== $spec ) {
-			$sections[] = $spec;
-		}
-		$parts = self::format_parts_compact( $lines );
-		if ( '' !== $parts ) {
-			$sections[] = __( 'قطعات اضافه', 'rasam-server-config' ) . ': ' . $parts;
-		}
-		if ( empty( $sections ) ) {
+		$title  = trim( (string) $product_title );
+		$spec   = self::get_variation_spec( $product_title, $variation_name, $variation_label );
+		$config = self::build_quotation_config_text( $spec, $lines );
+		if ( '' === $config ) {
 			return $title;
 		}
-		return $title . ' (' . implode( ' / ', $sections ) . ')';
+		return $title . ' (' . $config . ')';
 	}
 
 	/**

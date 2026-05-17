@@ -236,12 +236,13 @@ final class RSC_Admin_Filters {
 
 		$oi_table  = $wpdb->prefix . 'woocommerce_order_items';
 		$oim_table = $wpdb->prefix . 'woocommerce_order_itemmeta';
+		$lines_key = esc_sql( RSC_Order_Item_Meta::LINES_JSON );
 
 		$exists = " AND EXISTS (
 			SELECT 1 FROM {$oi_table} rsc_rqi
 			INNER JOIN {$oim_table} rsc_rqm ON rsc_rqm.order_item_id = rsc_rqi.order_item_id
 			WHERE rsc_rqi.order_id = {$fields}
-			AND rsc_rqm.meta_key = '_rsc_lines_json'
+			AND rsc_rqm.meta_key = '{$lines_key}'
 			AND TRIM( COALESCE( rsc_rqm.meta_value, '' ) ) NOT IN ( '', '[]', 'null' )
 			AND CHAR_LENGTH( TRIM( rsc_rqm.meta_value ) ) > 2
 		)";
@@ -278,12 +279,13 @@ final class RSC_Admin_Filters {
 		global $wpdb;
 		$oi_table  = $wpdb->prefix . 'woocommerce_order_items';
 		$oim_table = $wpdb->prefix . 'woocommerce_order_itemmeta';
+		$lines_key = esc_sql( RSC_Order_Item_Meta::LINES_JSON );
 
 		$exists = " AND EXISTS (
 			SELECT 1 FROM {$oi_table} rsc_rqi
 			INNER JOIN {$oim_table} rsc_rqm ON rsc_rqm.order_item_id = rsc_rqi.order_item_id
 			WHERE rsc_rqi.order_id = {$wpdb->posts}.ID
-			AND rsc_rqm.meta_key = '_rsc_lines_json'
+			AND rsc_rqm.meta_key = '{$lines_key}'
 			AND TRIM( COALESCE( rsc_rqm.meta_value, '' ) ) NOT IN ( '', '[]', 'null' )
 			AND CHAR_LENGTH( TRIM( rsc_rqm.meta_value ) ) > 2
 		)";
