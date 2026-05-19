@@ -1,0 +1,11 @@
+root = true
+
+[*.php]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# UTF-8 BOM باعث خرابی AJAX وردپرس می‌شود — حتماً UTF-8 without BOM
+[*.{php,js,css}]
+charset = utf-8

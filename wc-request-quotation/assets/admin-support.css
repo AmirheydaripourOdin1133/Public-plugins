@@ -1,0 +1,166 @@
+/* هشدار در متاباکس جزئیات (کلاس قبلی همین افزونه) */
+.rq-support-highlight {
+  background: #fff8e5;
+  border-right: 4px solid #dba617;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border-radius: 4px;
+  direction: rtl;
+  text-align: right;
+}
+
+/* لیست درخواست‌ها */
+.rq-row-support-new {
+  background-color: #fff8e5 !important;
+  box-shadow: inset 4px 0 0 #dba617;
+}
+
+.rq-row-support-pending {
+  background-color: #fcf0f1 !important;
+  box-shadow: inset 4px 0 0 #d63638;
+}
+
+.rq-support-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.rq-support-badge--new {
+  background: #dba617;
+  color: #fff;
+}
+
+.rq-support-badge--pending {
+  background: #fcf0f1;
+  color: #b32d2e;
+  border: 1px solid #d63638;
+}
+
+.rq-support-badge--done {
+  background: #edfaef;
+  color: #007017;
+  border: 1px solid #00a32a;
+}
+
+.rq-support-badge--none {
+  color: #a7aaad;
+}
+
+/* متاباکس تماس */
+.rq-support-box {
+  border-radius: 6px;
+  padding: 12px;
+  margin: 0;
+}
+
+.rq-support-box--pending {
+  background: #fff8e5;
+  border: 1px solid #dba617;
+}
+
+.rq-support-box--done {
+  background: #edfaef;
+  border: 1px solid #00a32a;
+}
+
+.rq-support-flag {
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rq-support-flag .dashicons {
+  color: #d63638;
+}
+
+.rq-support-box--done .rq-support-flag .dashicons {
+  color: #00a32a;
+}
+
+.rq-support-muted {
+  color: #646970;
+  font-style: italic;
+}
+
+.rq-support-report-wrap--hidden {
+  display: none;
+}
+
+.rq-support-report-wrap textarea {
+  margin-top: 6px;
+  direction: rtl;
+}
+
+/* ردیف‌های تماس‌گرفته‌شده — پس‌زمینه سبز ملایم */
+tr.rq-row-support-done {
+  background-color: #edfaef !important;
+}
+
+tr.rq-row-support-done td {
+  border-top-color: #c3e6cb;
+}
+
+/* ویجت پیشخوان */
+.rq-dashboard-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rq-dashboard-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f1;
+  direction: rtl;
+  text-align: right;
+}
+
+.rq-dashboard-list li:last-child {
+  border-bottom: none;
+}
+
+.rq-dashboard-date {
+  font-size: 11px;
+  color: #646970;
+}
+
+/* بنر تماس در متاباکس rasam-server-config */
+.rsc-rq-support-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 14px;
+  margin: 0 0 14px;
+  border-radius: 6px;
+  direction: rtl;
+  text-align: right;
+}
+
+.rsc-rq-support-banner--pending {
+  background: #fff8e5;
+  border: 1px solid #dba617;
+  color: #8a6d00;
+}
+
+.rsc-rq-support-banner--done {
+  background: #edfaef;
+  border: 1px solid #00a32a;
+  color: #007017;
+}
+
+.rsc-rq-support-banner .dashicons {
+  margin-top: 2px;
+}
+
+.rsc-rq-support-report {
+  width: 100%;
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: inherit;
+}
