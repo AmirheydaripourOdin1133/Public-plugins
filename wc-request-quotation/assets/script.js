@@ -1,6 +1,12 @@
 jQuery(function ($) {
   const $notice = $("#noticFormsMy");
 
+  /** شناسه وریشن معتبر (۰ و رشتهٔ خالی = محصول ساده). */
+  function parseVariationId(val) {
+    const id = parseInt(String(val ?? "").replace(/\D/g, ""), 10);
+    return id > 0 ? id : 0;
+  }
+
   if (typeof wc_rq_ajax !== "undefined" && wc_rq_ajax.support_label) {
     $("#wc-rq-support-label").text(wc_rq_ajax.support_label);
   }
@@ -13,6 +19,11 @@ jQuery(function ($) {
       "margin-top": "5px",
     });
   }
+
+  /** قبل از باز شدن پاپ‌آپ از مودال RSC — قیمت جمع نهایی است، نه data-price جدول. */
+  $(document).on("click", ".rsc-vt-modal__quotation", function () {
+    $("#wc-rq-price-from-vartable").val("0");
+  });
 
   // فقط اعداد برای تلفن و کد ملی / اقتصادی
   $("#wc-rq-phone, #wc-rq-national-id").on("input", function () {
@@ -32,13 +43,30 @@ jQuery(function ($) {
   // وقتی روی دکمه درخواست پیش‌فاکتور کلیک شد
   $(".wc-rq-btn").on("click", function () {
     const $form = $(this).closest("form");
-    const variationId = $form.find('input[name="variation_id"]').val();
+    const variationId = parseVariationId(
+      $form.find('input[name="variation_id"]').val()
+    );
     const productId =
-      $form.find('input[name="product_id"]').val() || $(this).data("id");
-    $("#wc-rq-is-variable").val(variationId ? 1 : 0);
+      parseInt(
+        String(
+          $form.find('input[name="product_id"]').val() || $(this).data("id")
+        ).replace(/\D/g, ""),
+        10
+      ) || 0;
+    $("#wc-rq-is-variable").val(variationId > 0 ? 1 : 0);
 
-    const rawPrice =
-      $(this).closest("tr").data("price") || $(this).data("price");
+    const $row = $(this).closest("tr");
+    let rawPrice = $(this).data("price");
+    let fromVartable = 0;
+    if ($row.length) {
+      const rowPrice = $row.data("price");
+      if (rowPrice !== undefined && rowPrice !== null && rowPrice !== "") {
+        rawPrice = rowPrice;
+        if (variationId > 0) {
+          fromVartable = 1;
+        }
+      }
+    }
     const baseName = $(this).data("name");
 
     let fullName = baseName;
@@ -58,13 +86,14 @@ jQuery(function ($) {
       }
     }
 
-    // ذخیره شناسه‌ها و قیمت
+    // ذخیره شناسه‌ها و قیمت — منبع: جدول/دکمه وریشن (نیاز به اصلاح /10 در صورت لازم)
     $("#wc-rq-product-id")
-      .val(variationId || productId)
+      .val(variationId > 0 ? variationId : productId)
       .data("original-id", productId)
-      .data("variation-id", variationId);
+      .data("variation-id", variationId > 0 ? variationId : "");
     $("#wc-rq-product-name").val(fullName);
     $("#wc-rq-product-price").val(rawPrice);
+    $("#wc-rq-price-from-vartable").val(String(fromVartable));
     $("#wc-rq-qty").val(1);
     $("#wc-rq-needs-support").prop("checked", false);
 
@@ -106,12 +135,11 @@ jQuery(function ($) {
     let raw_price = $("#wc-rq-product-price").val();
     let clean_price = parseInt(String(raw_price).replace(/[^\d]/g, ""), 10);
 
-    let isVariation =
-      $("#wc-rq-product-id").val() !== "" &&
-      $("#wc-rq-product-id").val() !==
-        $("#wc-rq-product-id").data("original-id");
+    const priceFromVartable =
+      String($("#wc-rq-price-from-vartable").val()) === "1";
 
-    if (isVariation && clean_price > 1000 && clean_price % 10 === 0) {
+    // فقط قیمت data-price جدول وریشن — نه محصول ساده و نه جمع RSC
+    if (priceFromVartable && clean_price > 1000 && clean_price % 10 === 0) {
       clean_price = clean_price / 10;
     }
 
@@ -147,7 +175,8 @@ jQuery(function ($) {
         product_id,
         product_name,
         product_price: clean_price,
-        website: jQuery('#wc-rq-website').val(),
+        price_from_vartable: priceFromVartable ? 1 : 0,
+        website: jQuery("#wc-rq-website").val(),
       },
       function (response) {
         if (response.success) {
@@ -172,7 +201,7 @@ jQuery(function ($) {
             msg = parsed.data.message;
           }
         } catch (e) {
-          /* پاسخ غیر JSON — معمولاً خروجی ناخواسته PHP */
+          /* پاسخ غیر JSON */
         }
       }
       showError(msg);

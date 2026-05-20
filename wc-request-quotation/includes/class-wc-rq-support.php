@@ -314,7 +314,7 @@ class WC_RQ_Support {
 			return;
 		}
 
-		$assets_ver = '2.2.4';
+		$assets_ver = '2.4.4';
 
 		wp_enqueue_style(
 			'wc-rq-admin-support',

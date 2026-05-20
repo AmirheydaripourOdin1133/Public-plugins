@@ -1,8 +1,18 @@
 <?php
 /**
- * Plugin Name: WooCommerce Request Quotation - صدور پیش فاکتور اختصاصی - رسام سرور
- * Description: افزونه درخواست پیش‌فاکتور برای ووکامرس
- * Version: 2.2.4
+ * Plugin Name: WooCommerce Request Quotation - رسام سرور
+ * Plugin URI: https://rasamserver.com
+ * Description: درخواست پیش‌فاکتور از صفحه محصول، تولید PDF فارسی، مدیریت تماس در ادمین. نسخه 2.4.4: رفع قیمت محصول ساده (variation_id=0 دیگر truthy نیست).
+ * Version: 2.4.4
+ * Requires at least: 6.0
+ * Requires PHP: 7.4
+ * Author: Amir heydaripour
+ * Author URI: https://t.me/amir_drwp
+ * Text Domain: wc-request-quotation
+ * Domain Path: /languages
+ *
+ * @package WC_Request_Quotation
+ * @author  Amir heydaripour
  */
 
 if (!defined('ABSPATH'))
@@ -10,6 +20,16 @@ if (!defined('ABSPATH'))
 
 if (!defined('WC_RQ_PLUGIN_FILE')) {
     define('WC_RQ_PLUGIN_FILE', __FILE__);
+}
+
+/** مدت نگهداری فایل PDF روی هاست (روز) — پیش‌فرض: ۶۰ روز (دو ماه). */
+if (!defined('WC_RQ_PDF_RETENTION_DAYS')) {
+    define('WC_RQ_PDF_RETENTION_DAYS', 60);
+}
+
+/** لینک دانشنامه / مستندات (README در مخزن GitHub). */
+if (!defined('WC_RQ_DOCS_URL')) {
+    define('WC_RQ_DOCS_URL', 'https://github.com/AmirheydaripourOdin1133/plugins-document/tree/main/wc-request-quotation');
 }
 
 require_once plugin_dir_path(__FILE__) . 'includes/wc-rq-loader.php';
@@ -54,10 +74,11 @@ class WC_Request_Quotation
     {
         add_action('init', [$this, 'register_cpt']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
-        add_action('woocommerce_after_shop_loop_item', [$this, 'render_request_button'], 20);
         add_action('woocommerce_after_add_to_cart_button', [$this, 'render_request_button'], 20);
         add_action('woocommerce_single_variation', [$this, 'render_request_button'], 25);
-        add_action('wp_footer', [$this, 'render_popup_html']);
+        add_action('wp_footer', [$this, 'maybe_render_popup_html']);
+
+        add_filter('plugin_row_meta', [$this, 'add_plugin_row_meta'], 10, 2);
 
         add_action('wp_ajax_wc_rq_submit_form', [$this, 'handle_form']);
         add_action('wp_ajax_nopriv_wc_rq_submit_form', [$this, 'handle_form']);
@@ -67,6 +88,9 @@ class WC_Request_Quotation
         add_action('add_meta_boxes', [$this, 'add_quotation_details_metabox']);
         add_action('admin_init', [$this, 'handle_pdf_actions']);
         add_action('before_delete_post', [$this, 'delete_pdf_with_post']);
+
+        add_action('init', [$this, 'maybe_schedule_pdf_cleanup']);
+        add_action('wc_rq_cleanup_old_pdfs', [$this, 'cleanup_old_pdfs']);
 
         if ( class_exists( 'WC_RQ_Support' ) ) {
             new WC_RQ_Support();
@@ -86,7 +110,7 @@ class WC_Request_Quotation
         if ( ! $screen || 'quotation_request' !== $screen->post_type ) {
             return;
         }
-        $ver = '2.2.4';
+        $ver = '2.4.4';
         wp_enqueue_style(
             'wc-rq-admin-support',
             plugin_dir_url( WC_RQ_PLUGIN_FILE ) . 'assets/admin-support.css',
@@ -210,7 +234,10 @@ class WC_Request_Quotation
             echo '<p><a href="' . esc_url($file_url) . '" class="button button-primary" target="_blank">دانلود PDF</a></p>';
         } else {
             echo '<p style="color:red;">PDF موجود نیست.</p>';
+            echo '<p class="description">فایل‌های قدیمی‌تر از ' . esc_html((string) $this->get_pdf_retention_days()) . ' روز به‌صورت خودکار از هاست حذف می‌شوند؛ درخواست در پنل باقی می‌ماند.</p>';
         }
+
+        echo '<p class="description">پس از حذف خودکار یا دستی، با «ساخت مجدد PDF» می‌توانید فایل را دوباره بسازید.</p>';
 
         $regen_url = add_query_arg([
             'action' => 'regenerate_pdf',
@@ -241,14 +268,136 @@ class WC_Request_Quotation
             }
 
             if ($_GET['action'] === 'delete_pdf') {
-                $file = get_post_meta($post_id, 'rq_pdf_path', true);
-                if ($file && file_exists($file)) {
-                    unlink($file);
-                    delete_post_meta($post_id, 'rq_pdf_path');
-                }
+                $this->remove_pdf_file_for_post($post_id);
                 wp_redirect(admin_url("post.php?post=$post_id&action=edit&pdf_action=deleted"));
                 exit;
             }
+        }
+    }
+
+    /**
+     * روزهای نگهداری PDF (قابل فیلتر).
+     *
+     * @return int
+     */
+    public function get_pdf_retention_days()
+    {
+        $days = (int) apply_filters('wc_rq_pdf_retention_days', WC_RQ_PDF_RETENTION_DAYS);
+        return max(1, $days);
+    }
+
+    /**
+     * زمان‌بندی روزانهٔ پاک‌سازی PDF در صورت نبودن Cron.
+     */
+    public function maybe_schedule_pdf_cleanup()
+    {
+        if (wp_next_scheduled('wc_rq_cleanup_old_pdfs')) {
+            return;
+        }
+        wp_schedule_event(time() + HOUR_IN_SECONDS, 'daily', 'wc_rq_cleanup_old_pdfs');
+    }
+
+    /**
+     * حذف فایل PDF یک درخواست (پست حذف نمی‌شود).
+     *
+     * @param int $post_id
+     * @return bool آیا فایلی حذف شد.
+     */
+    public function remove_pdf_file_for_post($post_id)
+    {
+        $post_id = (int) $post_id;
+        if ($post_id <= 0 || get_post_type($post_id) !== 'quotation_request') {
+            return false;
+        }
+
+        $removed = false;
+        $file = get_post_meta($post_id, 'rq_pdf_path', true);
+        if ($file && file_exists($file)) {
+            if (@unlink($file)) {
+                $removed = true;
+            }
+        }
+
+        $upload_dir = wp_upload_dir();
+        $default_path = $upload_dir['basedir'] . '/quotations/quotation-' . $post_id . '.pdf';
+        if (file_exists($default_path)) {
+            if (@unlink($default_path)) {
+                $removed = true;
+            }
+        }
+
+        delete_post_meta($post_id, 'rq_pdf_path');
+        return $removed;
+    }
+
+    /**
+     * Cron: حذف PDFهای قدیمی‌تر از مدت نگهداری (فقط فایل؛ رکورد درخواست می‌ماند).
+     */
+    public function cleanup_old_pdfs()
+    {
+        $days = $this->get_pdf_retention_days();
+        $cutoff_local = wp_date('Y-m-d H:i:s', strtotime('-' . $days . ' days', current_time('timestamp')));
+        $cutoff_ts = strtotime('-' . $days . ' days', current_time('timestamp'));
+
+        $post_ids = get_posts([
+            'post_type' => 'quotation_request',
+            'post_status' => 'any',
+            'posts_per_page' => 200,
+            'fields' => 'ids',
+            'no_found_rows' => true,
+            'date_query' => [
+                [
+                    'before' => $cutoff_local,
+                    'column' => 'post_date',
+                    'inclusive' => false,
+                ],
+            ],
+            'meta_query' => [
+                [
+                    'key' => 'rq_pdf_path',
+                    'compare' => 'EXISTS',
+                ],
+            ],
+        ]);
+
+        foreach ($post_ids as $post_id) {
+            $this->remove_pdf_file_for_post($post_id);
+        }
+
+        $this->cleanup_orphan_pdf_files($cutoff_ts);
+    }
+
+    /**
+     * حذف فایل‌های PDF یتیم در uploads/quotations قدیمی‌تر از cutoff.
+     *
+     * @param int $cutoff_ts برچسب زمانی GMT.
+     */
+    private function cleanup_orphan_pdf_files($cutoff_ts)
+    {
+        $upload_dir = wp_upload_dir();
+        $pdf_dir = $upload_dir['basedir'] . '/quotations';
+        if (!is_dir($pdf_dir)) {
+            return;
+        }
+
+        $files = glob($pdf_dir . '/quotation-*.pdf');
+        if (!is_array($files)) {
+            return;
+        }
+
+        foreach ($files as $file) {
+            if (!is_file($file) || filemtime($file) >= $cutoff_ts) {
+                continue;
+            }
+
+            if (preg_match('/quotation-(\d+)\.pdf$/', basename($file), $matches)) {
+                $post_id = (int) $matches[1];
+                if ($post_id > 0 && get_post_type($post_id) === 'quotation_request') {
+                    delete_post_meta($post_id, 'rq_pdf_path');
+                }
+            }
+
+            @unlink($file);
         }
     }
 
@@ -259,10 +408,25 @@ class WC_Request_Quotation
             return;
         }
 
-        $pdf_path = get_post_meta($post_id, 'rq_pdf_path', true);
-        if ($pdf_path && file_exists($pdf_path)) {
-            unlink($pdf_path); // Ø­Ø°Ù ÙÛŒØ²ÛŒÚ©ÛŒ ÙØ§ÛŒÙ„ PDF
+        $this->remove_pdf_file_for_post($post_id);
+    }
+
+    /**
+     * فعال‌سازی: زمان‌بندی Cron پاک‌سازی PDF.
+     */
+    public static function activate()
+    {
+        if (!wp_next_scheduled('wc_rq_cleanup_old_pdfs')) {
+            wp_schedule_event(time() + HOUR_IN_SECONDS, 'daily', 'wc_rq_cleanup_old_pdfs');
         }
+    }
+
+    /**
+     * غیرفعال‌سازی: لغو Cron.
+     */
+    public static function deactivate()
+    {
+        wp_clear_scheduled_hook('wc_rq_cleanup_old_pdfs');
     }
 
 
@@ -386,16 +550,82 @@ class WC_Request_Quotation
         <?php
     }
 
-    // for enqueuing styles and scripts
+    /**
+     * آیا در فرانت باید CSS/JS و پاپ‌آپ پیش‌فاکتور لود شود؟ (فقط صفحهٔ تک‌محصول)
+     *
+     * @return bool
+     */
+    public function is_single_product_frontend()
+    {
+        if (is_admin()) {
+            return false;
+        }
+        return function_exists('is_product') && is_product();
+    }
+
+    /**
+     * ثبت handleهای CSS/JS فرانت (برای وابستگی افزونه‌های دیگر مثل rasam-server-config).
+     */
+    private function register_frontend_assets()
+    {
+        $base_url = plugin_dir_url(__FILE__);
+        $ver = '2.4.4';
+
+        if (!wp_style_is('wc-rq-style', 'registered')) {
+            wp_register_style('wc-rq-style', $base_url . 'assets/style.css', [], $ver);
+        }
+        if (!wp_script_is('wc-rq-script', 'registered')) {
+            wp_register_script('wc-rq-script', $base_url . 'assets/script.js', ['jquery'], $ver, true);
+            wp_localize_script('wc-rq-script', 'wc_rq_ajax', [
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('wc_rq_nonce'),
+                'support_label' => class_exists('WC_RQ_Support') ? WC_RQ_Support::get_checkbox_label() : 'نیاز به راهنمایی و تماس کارشناس دارم',
+            ]);
+        }
+    }
+
+    /**
+     * بارگذاری assetهای فرانت فقط در صفحهٔ تک‌محصول ووکامرس.
+     */
     public function enqueue_assets()
     {
-        wp_enqueue_style('wc-rq-style', plugin_dir_url(__FILE__) . 'assets/style.css', [], '2.2.3');
-        wp_enqueue_script('wc-rq-script', plugin_dir_url(__FILE__) . 'assets/script.js', ['jquery'], '2.2.3', true);
-        wp_localize_script('wc-rq-script', 'wc_rq_ajax', [
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('wc_rq_nonce'),
-            'support_label' => class_exists( 'WC_RQ_Support' ) ? WC_RQ_Support::get_checkbox_label() : 'نیاز به راهنمایی و تماس کارشناس دارم',
-        ]);
+        if (!$this->is_single_product_frontend()) {
+            return;
+        }
+
+        $this->register_frontend_assets();
+        wp_enqueue_style('wc-rq-style');
+        wp_enqueue_script('wc-rq-script');
+    }
+
+    /**
+     * لینک «دانشنامه» در ردیف افزونه (صفحهٔ افزونه‌ها)، کنار نویسنده و نسخه.
+     *
+     * @param string[] $links
+     * @param string   $file
+     * @return string[]
+     */
+    public function add_plugin_row_meta($links, $file)
+    {
+        if (plugin_basename(WC_RQ_PLUGIN_FILE) !== $file) {
+            return $links;
+        }
+
+        $links[] = '<a href="' . esc_url(WC_RQ_DOCS_URL) . '" target="_blank" rel="noopener noreferrer">'
+            . esc_html__('دانشنامه', 'wc-request-quotation') . '</a>';
+
+        return $links;
+    }
+
+    /**
+     * HTML پاپ‌آپ فقط در صفحهٔ تک‌محصول.
+     */
+    public function maybe_render_popup_html()
+    {
+        if (!$this->is_single_product_frontend()) {
+            return;
+        }
+        $this->render_popup_html();
     }
     public function render_request_button()
     {
@@ -434,6 +664,7 @@ public function render_popup_html()
             <input type="hidden" id="wc-rq-product-name">
             <input type="hidden" id="wc-rq-product-price">
             <input type="hidden" id="wc-rq-is-variable" value="0">
+            <input type="hidden" id="wc-rq-price-from-vartable" value="0">
 
             <!-- honeypot anti-spam field (for bots) -->
             <input type="text"
@@ -529,11 +760,16 @@ public function handle_form()
     $qty = max(1, intval($_POST['qty'])); // Ù¾ÛŒØ´â€ŒÙØ±Ø¶ Ø­Ø¯Ø§Ù‚Ù„ Û±
     $product_id = intval($_POST['product_id']);
     $product_name = sanitize_text_field($_POST['product_name']);
-    $is_variable = !empty($_POST['is_variable']);
+    $is_variable = !empty($_POST['is_variable']) && (int) $_POST['is_variable'] === 1;
     $needs_support = !empty($_POST['needs_support']);
     $product_price = floatval(preg_replace('/[^\d.]/', '', (string) wp_unslash($_POST['product_price'] ?? '')));
 
-    if ($is_variable && $product_price > 1000 && fmod($product_price, 10) === 0.0) {
+    $price_from_vartable = !empty($_POST['price_from_vartable']);
+    if (
+        $price_from_vartable
+        && $product_price > 1000
+        && fmod($product_price, 10) === 0.0
+    ) {
         $product_price = $product_price / 10;
     }
 
@@ -802,6 +1038,9 @@ public function handle_form()
 
 
 }
+
+register_activation_hook(WC_RQ_PLUGIN_FILE, ['WC_Request_Quotation', 'activate']);
+register_deactivation_hook(WC_RQ_PLUGIN_FILE, ['WC_Request_Quotation', 'deactivate']);
 
 new WC_Request_Quotation;
 
