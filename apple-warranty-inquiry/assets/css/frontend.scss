@@ -296,10 +296,10 @@ $LargViewBreak: 1545px;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
+    flex-direction: column;
   }
 
   @include xxs {
-    flex-direction: column;
     gap: 0.8em;
   }
 }
@@ -331,7 +331,7 @@ $LargViewBreak: 1545px;
 
   }
 
-  @include xxs {
+  @include sm {
     width: 100%;
   }
 
@@ -496,6 +496,7 @@ $LargViewBreak: 1545px;
   gap: 1.25rem;
   align-items: center;
   padding-bottom: 1.25rem;
+  justify-content: center;
   border-bottom: 1px solid $borderColor;
 
   @include sm {

@@ -338,14 +338,14 @@
             justify-content: space-between;
     -ms-flex-wrap: wrap;
         flex-wrap: wrap;
-  }
-}
-@media (max-width: 400px) {
-  .awi-form__actions {
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
         -ms-flex-direction: column;
             flex-direction: column;
+  }
+}
+@media (max-width: 400px) {
+  .awi-form__actions {
     gap: 0.8em;
   }
 }
@@ -388,7 +388,7 @@
   -webkit-transition: all ease 0.3s;
   transition: all ease 0.3s;
 }
-@media (max-width: 400px) {
+@media (max-width: 768px) {
   .awi-btn {
     width: 100%;
   }
@@ -591,6 +591,9 @@
       -ms-flex-align: center;
           align-items: center;
   padding-bottom: 1.25rem;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   border-bottom: 1px solid #8F8F8F;
 }
 @media (max-width: 768px) {
