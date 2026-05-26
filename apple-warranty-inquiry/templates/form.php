@@ -58,7 +58,12 @@ defined( 'ABSPATH' ) || exit;
 		<div class="awi-form__actions">
 			<button type="submit" class="awi-btn" id="awi-submit">
 				<span class="awi-btn__spinner" aria-hidden="true"></span>
-				<span class="awi-btn__text"><?php esc_html_e( 'بررسی شناسه', 'apple-warranty-inquiry' ); ?><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.783 18.828a8.05 8.05 0 0 0 7.439-4.955 8.03 8.03 0 0 0-1.737-8.765 8.045 8.045 0 0 0-13.735 5.68c0 2.131.846 4.174 2.352 5.681a8.05 8.05 0 0 0 5.68 2.359m5.706-2.337 4.762 4.759" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+				<span class="awi-btn__text">
+					<span class="awi-btn__label"><?php esc_html_e( 'بررسی شناسه', 'apple-warranty-inquiry' ); ?></span>
+					<span class="awi-btn__icon" aria-hidden="true">
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.783 18.828a8.05 8.05 0 0 0 7.439-4.955 8.03 8.03 0 0 0-1.737-8.765 8.045 8.045 0 0 0-13.735 5.68c0 2.131.846 4.174 2.352 5.681a8.05 8.05 0 0 0 5.68 2.359m5.706-2.337 4.762 4.759" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+					</span>
+				</span>
 			</button>
 			<?php if ( ! empty( $help_url ) ) : ?>
 				<p class="awi-help">

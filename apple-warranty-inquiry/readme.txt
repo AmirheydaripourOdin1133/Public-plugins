@@ -3,7 +3,7 @@ Contributors: Payam Ava - Heydaripour
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Tags: warranty, apple, serial, inquiry, persian
@@ -39,6 +39,11 @@ Tags: warranty, apple, serial, inquiry, persian
 
 == Changelog ==
 
+= 1.1.3 =
+* رفع لود نشدن JS ادمین در صفحه تصاویر
+* حفظ آیکون SVG دکمه «بررسی شناسه» هنگام لودینگ
+* لینک‌های مستندات و سازنده در اطلاعات افزونه
+
 = 1.1.2 =
 * افزایش نسخه برای هم‌گام‌سازی cache فرانت و ادمین
 
@@ -56,6 +61,9 @@ Tags: warranty, apple, serial, inquiry, persian
 * باکس شورت‌کد در لیست سریال‌ها
 
 == Upgrade Notice ==
+
+= 1.1.3 =
+به‌روزرسانی JS/CSS ادمین و فرانت — پس از آپلود کش را پاک کنید.
 
 = 1.1.2 =
 نسخه ادمین و فرانت را هم‌گام کنید و کش‌ها را پاک کنید.

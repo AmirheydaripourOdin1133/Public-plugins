@@ -183,8 +183,8 @@ $LargViewBreak: 1545px;
 .awi-input {
   width: 100%;
   box-sizing: border-box;
-  min-height: 60px !important;
-  height: 60px !important;
+  min-height: 62px !important;
+  height: 62px !important;
   font-size: 14.5px !important;
   padding: 0.75rem 1rem !important;
   border: 1px solid $borderColor !important;
@@ -204,16 +204,17 @@ $LargViewBreak: 1545px;
 .awi-captcha-field {
   display: flex;
   flex-direction: row;
-  align-items: stretch;
+  align-items: center;
   width: 100%;
   padding-left: 8px;
-  min-height: 48px;
+  min-height: 62px;
+  height: 62px !important;
   box-sizing: border-box;
   border: 1px solid $borderColor;
-  border-radius: 12px;
+  border-radius: 16px;
   background: #fff;
   overflow: hidden;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .awi-captcha-field:focus-within {
@@ -229,6 +230,7 @@ $LargViewBreak: 1545px;
   min-height: 58px;
   height: 58px !important;
   font-size: 14.5px !important;
+  background-color: transparent !important;
   margin: 0 !important;
   border-color: transparent !important;
   padding: 0.75rem 1rem !important;
@@ -380,6 +382,10 @@ $LargViewBreak: 1545px;
 
 .awi-btn--loading .awi-btn__text {
   letter-spacing: 0.01em;
+}
+
+.awi-btn--loading .awi-btn__icon {
+  display: none;
 }
 
 @keyframes awi-spin {
@@ -668,7 +674,7 @@ $LargViewBreak: 1545px;
 .awi-result__warranty-type {
   margin: 0 0 0.35rem !important;
   font-weight: 600 !important;
-  font-size: 1.05rem !important;
+  font-size: 1.15rem !important;
   line-height: 1.8em !important;
   color: $textColor !important;
   text-align: right !important;

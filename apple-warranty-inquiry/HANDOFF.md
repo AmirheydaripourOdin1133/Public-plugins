@@ -1,7 +1,7 @@
 # Apple Warranty Inquiry — دانشنامه پلاگین
 
 > **مرجع اصلی پروژه** · مناسب Git، مدیر وردپرس و توسعه‌دهنده  
-> آخرین به‌روزرسانی سند: **2026-05** · نسخهٔ محصول: **1.1.2**
+> آخرین به‌روزرسانی سند: **2026-05** · نسخهٔ محصول: **1.1.3**
 
 | مشخصه | مقدار |
 |--------|--------|
@@ -228,11 +228,11 @@ serial_number,product_name,image_key,warranty_type,start_date,end_date
 ## ۹. پیش‌نیازها و Constants
 
 ```php
-// plugin.php — نسخه محصول (همه باید 1.1.2 باشند)
-// * Version:           1.1.2   (هدر فایل پلاگین)
+// plugin.php — نسخه محصول (همه باید 1.1.3 باشند)
+// * Version:           1.1.3   (هدر فایل پلاگین)
 // * APPLE_WARRANTY_VERSION
 // * readme.txt → Stable tag
-APPLE_WARRANTY_VERSION      // '1.1.2' — cache-bust دارایی‌های CSS/JS
+APPLE_WARRANTY_VERSION      // '1.1.3' — cache-bust دارایی‌های CSS/JS
 APPLE_WARRANTY_PLUGIN_FILE
 APPLE_WARRANTY_PLUGIN_DIR
 APPLE_WARRANTY_PLUGIN_URL
@@ -562,6 +562,7 @@ do_action( 'apple_warranty/after_lookup', $item, $normalized_serial );
 | 1.1.0 | درون‌ریزی فارسی، admin assets تفکیک‌شده، آیکون منوی اپل |
 | 1.1.1 | فایل نمونه CSV ثابت + دانلود در `admin_init` |
 | 1.1.2 | هم‌گام‌سازی نسخه‌ها و کش‌بسیت فرانت/ادمین |
+| 1.1.3 | رفع enqueue ادمین تصاویر، SVG دکمه submit، لینک مستندات |
 
 ---
 

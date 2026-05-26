@@ -19,7 +19,8 @@
   var captchaImg = document.getElementById('awi-captcha-img');
   var refreshBtn = document.getElementById('awi-captcha-refresh');
   var submitBtn = document.getElementById('awi-submit');
-  var btnText = submitBtn ? submitBtn.querySelector('.awi-btn__text') : null;
+  var btnLabel = submitBtn ? submitBtn.querySelector('.awi-btn__label') : null;
+  var btnIcon = submitBtn ? submitBtn.querySelector('.awi-btn__icon') : null;
   var noticeEl = document.getElementById('awi-notice');
   var noticeText = document.getElementById('awi-notice-text');
   var noticeClose = document.getElementById('awi-notice-close');
@@ -76,10 +77,14 @@
     submitBtn.classList.toggle('awi-btn--loading', loading);
     form.classList.toggle('awi-form--loading', loading);
 
-    if (btnText) {
-      btnText.textContent = loading
+    if (btnLabel) {
+      btnLabel.textContent = loading
         ? appleWarranty.i18n.checking
         : appleWarranty.i18n.checkId;
+    }
+
+    if (btnIcon) {
+      btnIcon.hidden = loading;
     }
   }
 
