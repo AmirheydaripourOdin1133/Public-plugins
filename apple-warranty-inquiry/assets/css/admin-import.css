@@ -1,0 +1,304 @@
+/* Import page — درون‌ریزی */
+.awi-import-wrap__title {
+  margin-bottom: 1rem;
+}
+
+.awi-import-guide {
+  max-width: 720px;
+  margin: 0 0 1.5rem;
+  padding: 14px 18px;
+  border: 1px solid #dcdcde;
+  border-radius: 8px;
+  background: #f6f7f7;
+}
+
+.awi-import-guide__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.awi-import-guide__label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #646970;
+}
+
+.awi-import-guide__list {
+  margin: 0;
+  padding: 0 1.1rem 0 0;
+  list-style: disc;
+  color: #3c434a;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.awi-import-guide__list li {
+  margin-bottom: 6px;
+}
+
+.awi-import-guide__list li:last-child {
+  margin-bottom: 0;
+}
+
+.awi-import-guide__code {
+  display: inline-block;
+  margin-top: 2px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #fff;
+  border: 1px solid #dcdcde;
+  font-size: 12px;
+  word-break: break-all;
+}
+
+.awi-import-guide__warn {
+  color: #8a2424;
+}
+
+.awi-import-panel {
+  position: relative;
+  max-width: 960px;
+}
+
+.awi-import-panel.awi-import-panel--loading {
+  pointer-events: none;
+}
+
+.awi-import-panel.awi-import-panel--loading .awi-import-loading {
+  display: flex;
+}
+
+.awi-import-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(2px);
+}
+
+.awi-import-loading__spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(34, 113, 177, 0.2);
+  border-top-color: #2271b1;
+  border-radius: 50%;
+  animation: awi-admin-spin 0.7s linear infinite;
+}
+
+.awi-import-loading__text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1d2327;
+}
+
+@keyframes awi-admin-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.awi-import-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  list-style: none;
+}
+
+.awi-import-steps__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid #dcdcde;
+  border-radius: 999px;
+  background: #fff;
+  color: #646970;
+  font-size: 13px;
+}
+
+.awi-import-steps__item.is-active {
+  border-color: #2271b1;
+  background: #f0f6fc;
+  color: #1d2327;
+  font-weight: 600;
+}
+
+.awi-import-steps__item.is-done {
+  border-color: #00a32a;
+  color: #1d2327;
+}
+
+.awi-import-steps__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #dcdcde;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.awi-import-steps__item.is-active .awi-import-steps__num {
+  background: #2271b1;
+  color: #fff;
+}
+
+.awi-import-steps__item.is-done .awi-import-steps__num {
+  background: #00a32a;
+  color: #fff;
+}
+
+.awi-import-step-card {
+  margin-bottom: 1.25rem;
+  padding: 18px 20px;
+  border: 1px solid #dcdcde;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.awi-import-step-card__title {
+  margin: 0 0 14px;
+  padding: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.awi-import-drop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 0;
+  padding: 28px 20px;
+  border: 2px dashed #c3c4c7;
+  border-radius: 8px;
+  background: #fafafa;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.awi-import-drop:hover,
+.awi-import-drop:focus-within {
+  border-color: #2271b1;
+  background: #f0f6fc;
+}
+
+.awi-import-drop__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.awi-import-drop__icon {
+  width: 40px;
+  height: 48px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z' stroke='%232271b1' stroke-width='1.5'/%3E%3Cpath d='M14 2v6h6M8 13h8M8 17h5' stroke='%23646970' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  opacity: 0.9;
+}
+
+.awi-import-drop__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1d2327;
+}
+
+.awi-import-drop__hint {
+  font-size: 12px;
+  color: #646970;
+}
+
+.awi-import-drop__file {
+  min-height: 1.2em;
+  font-size: 13px;
+  font-weight: 500;
+  color: #2271b1;
+}
+
+.awi-import-upload-form__actions,
+.awi-import-final-form__actions {
+  margin: 14px 0 0;
+}
+
+.awi-import-btn__spinner {
+  display: none;
+  width: 16px;
+  height: 16px;
+  margin-inline-start: 8px;
+  vertical-align: middle;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: awi-admin-spin 0.65s linear infinite;
+}
+
+.button.is-loading .awi-import-btn__spinner {
+  display: inline-block;
+}
+
+.button.is-loading .awi-import-btn__label {
+  opacity: 0.9;
+}
+
+.awi-import-preview-meta {
+  margin: 0 0 12px;
+  color: #646970;
+  font-size: 13px;
+}
+
+.awi-import-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.awi-import-table th {
+  white-space: nowrap;
+}
+
+.awi-import-confirm {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border-radius: 6px;
+  background: #fcf9e8;
+  border: 1px solid #f0e6b6;
+  font-size: 13px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.awi-import-confirm input {
+  margin-top: 3px;
+}
+
+.awi-import-step-card--confirm {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f1;
+}
