@@ -374,6 +374,11 @@
   -webkit-transition: all ease 0.3s;
   transition: all ease 0.3s;
 }
+.awi-btn .awi-btn__icon {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
 .awi-btn .awi-btn__text {
   display: -webkit-box;
   display: -ms-flexbox;

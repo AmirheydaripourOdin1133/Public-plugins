@@ -320,7 +320,9 @@ $LargViewBreak: 1545px;
   font-size: 1rem;
   cursor: pointer;
   transition: all ease 0.3s;
-
+  .awi-btn__icon {
+    display: flex;
+  }
   .awi-btn__text {
     display: flex;
     align-items: center;

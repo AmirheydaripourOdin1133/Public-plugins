@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **نسخه** | `1.1.3` |
+| **نسخه** | `1.1.4` |
 | **PHP** | 8.0+ |
 | **WordPress** | 6.0+ |
 | **Text domain** | `apple-warranty-inquiry` |

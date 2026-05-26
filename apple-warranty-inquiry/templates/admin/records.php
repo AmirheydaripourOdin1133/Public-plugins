@@ -120,9 +120,35 @@ if ( '' !== $search ) {
 							<th scope="row" class="check-column">
 								<input type="checkbox" name="record_ids[]" value="<?php echo esc_attr( (string) $item->id ); ?>" />
 							</th>
-							<td><code><?php echo esc_html( $item->serial_number ); ?></code></td>
+							<td>
+								<button
+									type="button"
+									class="awi-image-key-copy"
+									data-key="<?php echo esc_attr( $item->serial_number ); ?>"
+									data-copied="<?php esc_attr_e( 'کپی شد!', 'apple-warranty-inquiry' ); ?>"
+									title="<?php esc_attr_e( 'کلیک برای کپی شماره سریال', 'apple-warranty-inquiry' ); ?>"
+									aria-label="<?php esc_attr_e( 'کپی شماره سریال', 'apple-warranty-inquiry' ); ?>"
+								>
+									<code dir="ltr"><?php echo esc_html( $item->serial_number ); ?></code>
+								</button>
+							</td>
 							<td><?php echo esc_html( $item->product_name ); ?></td>
-							<td><?php echo esc_html( $item->image_key ); ?></td>
+							<td>
+								<?php if ( '' !== (string) $item->image_key ) : ?>
+									<button
+										type="button"
+										class="awi-image-key-copy"
+										data-key="<?php echo esc_attr( $item->image_key ); ?>"
+										data-copied="<?php esc_attr_e( 'کپی شد!', 'apple-warranty-inquiry' ); ?>"
+										title="<?php esc_attr_e( 'کلیک برای کپی شناسه', 'apple-warranty-inquiry' ); ?>"
+										aria-label="<?php esc_attr_e( 'کپی شناسه تصویر', 'apple-warranty-inquiry' ); ?>"
+									>
+										<code dir="ltr"><?php echo esc_html( $item->image_key ); ?></code>
+									</button>
+								<?php else : ?>
+									<span aria-hidden="true">—</span>
+								<?php endif; ?>
+							</td>
 							<td><?php echo esc_html( wp_trim_words( $item->warranty_type, 8 ) ); ?></td>
 							<td><?php echo esc_html( $item->start_date ); ?></td>
 							<td><?php echo esc_html( $item->end_date ); ?></td>
