@@ -3,7 +3,7 @@
  * Plugin Name:       Apple Warranty Inquiry
  * Plugin URI:        https://github.com/AmirheydaripourOdin1133/plugins-document/tree/main/apple-warranty-inquiry
  * Description:       سیستم استعلام گارانتی محصولات اپل بر اساس شماره سریال
- * Version:           1.1.1
+ * Version:           1.1.2
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Author:            Payam Ava - Heydaripour
@@ -16,7 +16,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'APPLE_WARRANTY_VERSION', '1.1.1' );
+define( 'APPLE_WARRANTY_VERSION', '1.1.2' );
 define( 'APPLE_WARRANTY_PLUGIN_FILE', __FILE__ );
 define( 'APPLE_WARRANTY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'APPLE_WARRANTY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

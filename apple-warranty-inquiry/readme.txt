@@ -3,7 +3,7 @@ Contributors: Payam Ava - Heydaripour
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Tags: warranty, apple, serial, inquiry, persian
@@ -39,6 +39,9 @@ Tags: warranty, apple, serial, inquiry, persian
 
 == Changelog ==
 
+= 1.1.2 =
+* افزایش نسخه برای هم‌گام‌سازی cache فرانت و ادمین
+
 = 1.1.1 =
 * فایل نمونه CSV ثابت در assets/samples
 * دانلود نمونه قبل از خروجی HTML (رفع فایل HTML در CSV)
@@ -54,5 +57,5 @@ Tags: warranty, apple, serial, inquiry, persian
 
 == Upgrade Notice ==
 
-= 1.1.1 =
-به‌روزرسانی مستندات و رفع دانلود فایل نمونه CSV.
+= 1.1.2 =
+نسخه ادمین و فرانت را هم‌گام کنید و کش‌ها را پاک کنید.

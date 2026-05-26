@@ -94,77 +94,74 @@ class Menu {
 	 * @param string $hook Current admin page hook suffix.
 	 */
 	public function enqueue_admin_assets( string $hook ): void {
-		$records_hooks = array(
-			'toplevel_page_apple-warranty',
-		);
+		$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
 
-		$images_hooks = array(
-			'apple-warranty_page_apple-warranty-images',
-		);
+		$is_plugin_page = in_array(
+			$page,
+			array( 'apple-warranty', 'apple-warranty-images', 'apple-warranty-import', 'apple-warranty-settings' ),
+			true
+		) || ( false !== strpos( $hook, 'apple-warranty' ) );
 
-		$import_hooks = array(
-			'apple-warranty_page_apple-warranty-import',
-		);
-
-		if ( in_array( $hook, $records_hooks, true ) ) {
-			wp_enqueue_style(
-				'apple-warranty-admin',
-				APPLE_WARRANTY_PLUGIN_URL . 'assets/css/admin.css',
-				array(),
-				APPLE_WARRANTY_VERSION
-			);
-			wp_enqueue_script(
-				'apple-warranty-admin-records',
-				APPLE_WARRANTY_PLUGIN_URL . 'assets/js/admin-records.js',
-				array( 'jquery' ),
-				APPLE_WARRANTY_VERSION,
-				true
-			);
+		if ( ! $is_plugin_page ) {
 			return;
 		}
 
-		if ( in_array( $hook, $images_hooks, true ) ) {
-			wp_enqueue_media();
-			wp_enqueue_style(
-				'apple-warranty-admin',
-				APPLE_WARRANTY_PLUGIN_URL . 'assets/css/admin.css',
-				array(),
-				APPLE_WARRANTY_VERSION
-			);
-			wp_enqueue_script(
-				'apple-warranty-admin-images',
-				APPLE_WARRANTY_PLUGIN_URL . 'assets/js/admin-images.js',
-				array( 'jquery' ),
-				APPLE_WARRANTY_VERSION,
-				true
-			);
-			return;
-		}
+		// Base admin CSS (used by records + images).
+		wp_enqueue_style(
+			'apple-warranty-admin',
+			APPLE_WARRANTY_PLUGIN_URL . 'assets/css/admin.css',
+			array(),
+			APPLE_WARRANTY_VERSION
+		);
 
-		if ( in_array( $hook, $import_hooks, true ) ) {
+		// Load all plugin admin JS across all plugin screens for reliability.
+		wp_enqueue_script(
+			'apple-warranty-admin-records',
+			APPLE_WARRANTY_PLUGIN_URL . 'assets/js/admin-records.js',
+			array( 'jquery' ),
+			APPLE_WARRANTY_VERSION,
+			true
+		);
+		wp_enqueue_script(
+			'apple-warranty-admin-images',
+			APPLE_WARRANTY_PLUGIN_URL . 'assets/js/admin-images.js',
+			array( 'jquery' ),
+			APPLE_WARRANTY_VERSION,
+			true
+		);
+		wp_enqueue_script(
+			'apple-warranty-admin-import',
+			APPLE_WARRANTY_PLUGIN_URL . 'assets/js/admin-import.js',
+			array(),
+			APPLE_WARRANTY_VERSION,
+			true
+		);
+
+		// Import page extra CSS.
+		if ( 'apple-warranty-import' === $page ) {
 			wp_enqueue_style(
 				'apple-warranty-admin-import',
 				APPLE_WARRANTY_PLUGIN_URL . 'assets/css/admin-import.css',
 				array(),
 				APPLE_WARRANTY_VERSION
 			);
-			wp_enqueue_script(
-				'apple-warranty-admin-import',
-				APPLE_WARRANTY_PLUGIN_URL . 'assets/js/admin-import.js',
-				array(),
-				APPLE_WARRANTY_VERSION,
-				true
-			);
-			wp_localize_script(
-				'apple-warranty-admin-import',
-				'appleWarrantyAdmin',
-				array(
-					'import' => array(
-						'previewing' => __( 'در حال آماده‌سازی پیش‌نمایش…', 'apple-warranty-inquiry' ),
-						'importing'  => __( 'در حال درون‌ریزی داده‌ها…', 'apple-warranty-inquiry' ),
-					),
-				)
-			);
 		}
+
+		// Images page needs media library.
+		if ( 'apple-warranty-images' === $page ) {
+			wp_enqueue_media();
+		}
+
+		// Localization for import UI (safe on all plugin pages).
+		wp_localize_script(
+			'apple-warranty-admin-import',
+			'appleWarrantyAdmin',
+			array(
+				'import' => array(
+					'previewing' => __( 'در حال آماده‌سازی پیش‌نمایش…', 'apple-warranty-inquiry' ),
+					'importing'  => __( 'در حال درون‌ریزی داده‌ها…', 'apple-warranty-inquiry' ),
+				),
+			)
+		);
 	}
 }
