@@ -23,6 +23,7 @@ $pagination_query = array( 'page' => 'apple-warranty' );
 if ( '' !== $search ) {
 	$pagination_query['s'] = $search;
 }
+
 ?>
 <div class="wrap">
 	<h1 class="wp-heading-inline"><?php esc_html_e( 'لیست شماره سریال‌های گارانتی', 'apple-warranty-inquiry' ); ?></h1>
@@ -94,6 +95,7 @@ if ( '' !== $search ) {
 		</div>
 		<?php endif; ?>
 
+		<div class="awi-records-table-wrap">
 		<table class="wp-list-table widefat fixed striped table-view-list">
 			<thead>
 				<tr>
@@ -176,6 +178,7 @@ if ( '' !== $search ) {
 				</tr>
 			</tfoot>
 		</table>
+		</div>
 
 		<?php if ( $total_items > 0 ) : ?>
 		<div class="tablenav bottom">

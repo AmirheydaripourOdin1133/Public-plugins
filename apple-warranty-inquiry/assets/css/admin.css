@@ -95,6 +95,25 @@
   font-weight: 600;
 }
 
+/* Records list — horizontal scroll on small screens (structure unchanged) */
+@media screen and (max-width: 782px) {
+  .awi-records-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -10px;
+    padding: 0 10px;
+  }
+
+  .awi-records-table-wrap .wp-list-table {
+    min-width: 880px;
+    table-layout: auto;
+  }
+
+  .awi-records-table-wrap .wp-list-table .awi-image-key-copy code {
+    white-space: nowrap;
+  }
+}
+
 /* Help tooltip for شناسه تصویر */
 .awi-help-tip {
   display: inline-block;

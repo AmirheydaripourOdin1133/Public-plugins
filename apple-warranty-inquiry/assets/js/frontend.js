@@ -14,6 +14,7 @@
   }
 
   var serialInput = document.getElementById('awi-serial');
+  var serialClearBtn = document.getElementById('awi-serial-clear');
   var captchaInput = document.getElementById('awi-captcha');
   var captchaToken = document.getElementById('awi-captcha-token');
   var captchaImg = document.getElementById('awi-captcha-img');
@@ -211,6 +212,30 @@
     refreshBtn.addEventListener('click', function (e) {
       e.preventDefault();
       refreshCaptcha();
+    });
+  }
+
+  function updateSerialClearVisibility() {
+    if (!serialInput || !serialClearBtn) {
+      return;
+    }
+
+    var hasValue = serialInput.value.length > 0;
+    serialClearBtn.hidden = !hasValue;
+  }
+
+  if (serialInput) {
+    serialInput.addEventListener('input', updateSerialClearVisibility);
+    serialInput.addEventListener('change', updateSerialClearVisibility);
+    updateSerialClearVisibility();
+  }
+
+  if (serialClearBtn && serialInput) {
+    serialClearBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      serialInput.value = '';
+      updateSerialClearVisibility();
+      serialInput.focus();
     });
   }
 

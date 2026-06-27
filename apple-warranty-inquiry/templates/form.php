@@ -44,15 +44,26 @@ defined( 'ABSPATH' ) || exit;
 			</div>
 			<div class="awi-field awi-field--serial">
 				<label class="awi-label" for="awi-serial"><?php esc_html_e( 'شماره سریال', 'apple-warranty-inquiry' ); ?></label>
-				<input
-					type="text"
-					class="awi-input"
-					id="awi-serial"
-					name="serial"
-					dir="ltr"
-					autocomplete="off"
-					placeholder="<?php esc_attr_e( 'شماره سریال دستگاه خود را وارد کنید.', 'apple-warranty-inquiry' ); ?>"
-				/>
+				<div class="awi-serial-input" id="awi-serial-wrap">
+					<input
+						type="text"
+						class="awi-input awi-serial-input__field"
+						id="awi-serial"
+						name="serial"
+						dir="ltr"
+						autocomplete="off"
+						placeholder="<?php esc_attr_e( 'شماره سریال دستگاه خود را وارد کنید.', 'apple-warranty-inquiry' ); ?>"
+					/>
+					<button
+						type="button"
+						class="awi-serial-input__clear"
+						id="awi-serial-clear"
+						hidden
+						aria-label="<?php esc_attr_e( 'پاک کردن شماره سریال', 'apple-warranty-inquiry' ); ?>"
+					>
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5.47 6.015v12.514a2.72 2.72 0 0 0 2.721 2.721h7.618a2.72 2.72 0 0 0 2.72-2.72V6.014m-15.235.001h17.412" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.735 6.015V4.382a1.63 1.63 0 0 1 1.633-1.632h3.264a1.63 1.63 0 0 1 1.633 1.632v1.633M9.824 16.992v-5.439m4.353 5.439v-5.439" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+					</button>
+				</div>
 			</div>
 		</div>
 		<div class="awi-form__actions">

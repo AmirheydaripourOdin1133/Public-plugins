@@ -33,6 +33,7 @@
 
   $(document).on('click', '.awi-image-key-copy', function (e) {
     e.preventDefault();
+    e.stopPropagation();
     var $btn = $(this);
     var key = $btn.data('key');
     if (!key) {

@@ -200,6 +200,54 @@ $LargViewBreak: 1545px;
   box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
 }
 
+/* Serial field — clear icon on the left when filled */
+.awi-serial-input {
+  position: relative;
+  width: 100%;
+}
+
+.awi-serial-input__field {
+  padding-left: 2.75rem !important;
+}
+
+.awi-serial-input__clear {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #6e6e73;
+  cursor: pointer;
+  transform: translateY(-50%);
+  opacity: 0.75;
+  transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.awi-serial-input__clear:hover,
+.awi-serial-input__clear:focus {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.06);
+  color: #1d1d1f;
+  outline: none;
+}
+
+.awi-serial-input__clear svg {
+  display: block;
+}
+
+.awi-serial-input__clear[hidden] {
+  display: none !important;
+}
+
 /* Captcha: one outer border only (RTL: image left, text right) */
 .awi-captcha-field {
   display: flex;
@@ -488,13 +536,14 @@ $LargViewBreak: 1545px;
 }
 
 .awi-result {
-  border: 1px solid #d2d2d7;
   border-radius: 16px;
   padding: 1.5rem;
+  box-shadow: 2px 4px 12px 0px #00000014;
   background: #fff;
+  padding-bottom: 3.5em;
   @include sm{
     padding: 1.5rem 0.8em;
-    border-radius: 12px;
+    // border-radius: 12px;
   }
 }
 
@@ -505,7 +554,7 @@ $LargViewBreak: 1545px;
   align-items: center;
   padding-bottom: 1.25rem;
   justify-content: center;
-  border-bottom: 1px solid $borderColor;
+  border-bottom: 1px solid #e8e8ed;
 
   @include sm {
     gap: 1rem;
@@ -543,6 +592,9 @@ $LargViewBreak: 1545px;
 .awi-result__product-img {
   position: absolute;
   top: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
   right: 0;
   display: block;
   max-width: 180px;
