@@ -1,0 +1,58 @@
+/* Shared empty / not-found motion for all skins */
+@keyframes mfs-shake-top {
+	0%,
+	100% {
+		transform: rotate(0deg);
+		transform-origin: 50% 0;
+	}
+	10% {
+		transform: rotate(2deg);
+	}
+	20%,
+	40%,
+	60% {
+		transform: rotate(-4deg);
+	}
+	30%,
+	50%,
+	70% {
+		transform: rotate(4deg);
+	}
+	80% {
+		transform: rotate(-2deg);
+	}
+	90% {
+		transform: rotate(2deg);
+	}
+}
+
+.mfs-empty-hint,
+.mfs-not-found {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	margin: 0;
+	text-align: center;
+	flex-wrap: wrap;
+	color: inherit;
+}
+
+.mfs-empty-hint > svg,
+.mfs-not-found > svg,
+.mfs-icon--hint,
+.mfs-icon--not-found {
+	flex-shrink: 0;
+	color: currentColor;
+	animation: mfs-shake-top 1.8s cubic-bezier(0.455, 0.03, 0.515, 0.955) 1s infinite both;
+}
+
+.mfs-empty-hint span,
+.mfs-not-found span {
+	line-height: 1.5;
+}
+
+.mfs-icon {
+	display: block;
+	flex-shrink: 0;
+}
