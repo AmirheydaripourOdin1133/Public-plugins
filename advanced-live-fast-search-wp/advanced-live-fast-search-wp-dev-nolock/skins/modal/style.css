@@ -1,0 +1,512 @@
+@charset "UTF-8";
+
+.search-body-box {
+	overflow-y: auto;
+	overflow-x: hidden;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #000000d4;
+	backdrop-filter: blur(16px);
+	-webkit-transition: 0.5s ease-in-out;
+	transition: 0.5s ease-in-out;
+	opacity: 0;
+	visibility: hidden;
+	z-index: 999999;
+}
+
+.mfs-trigger {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	color: #b8b8b8;
+	line-height: 0;
+}
+
+.mfs-trigger:hover {
+	color: var(--mfs-accent, #9f1c31);
+}
+
+.search-body-box.open {
+	height: 100%;
+	opacity: 1;
+	visibility: visible;
+}
+
+.search-body-box .close {
+	position: fixed;
+	top: 1rem;
+	left: 2rem;
+	color: #ffffff4f;
+	z-index: 10;
+	opacity: 1;
+	cursor: pointer;
+	border-radius: 5px;
+	padding: 0 !important;
+	transition: 0.3s;
+	background: none !important;
+	border: none;
+}
+
+.search-body-box .close:hover {
+	color: #fff;
+}
+
+#search-by-json-form {
+	min-width: 320px;
+	height: 100%;
+}
+
+.search-by-json {
+	transition: all 0.3s;
+	padding: 10rem 2rem 4rem;
+	position: relative;
+	width: min(75rem, 75%);
+	margin-inline: auto;
+}
+
+.search-by-json .d-none {
+	display: none !important;
+}
+
+.search-by-json .show-hide {
+	transition: all 0.7s;
+}
+
+.search-by-json .fast-hide {
+	opacity: 0;
+	overflow: hidden;
+	visibility: hidden;
+}
+
+.search-by-json .fast-show {
+	opacity: 1;
+	visibility: visible;
+}
+
+.search-by-json .input {
+	position: relative;
+	width: 100%;
+}
+
+.search-by-json .input input {
+	width: 100%;
+	height: 63px;
+	outline: none;
+	padding: 0 2.7rem 0 6rem !important;
+	transition: 500ms;
+	margin: 0;
+	text-align: right;
+	color: #2c2c2c;
+	background: white;
+	border-radius: 16px;
+	border: 3px solid #00000029;
+	font-size: 16px;
+}
+
+.search-by-json .input input::placeholder {
+	color: gray;
+	font-size: 16px !important;
+}
+
+.search-by-json .input .empty {
+	position: absolute;
+	top: 51%;
+	transform: translateY(-50%);
+	cursor: pointer;
+	left: 2rem;
+	transition: 500ms;
+	line-height: 0;
+	color: #000000eb;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.search-by-json .input .empty:hover {
+	color: var(--mfs-accent, #ff7020);
+}
+
+.search-by-json .icon-search {
+	position: absolute;
+	right: 14px;
+	top: 46%;
+	transform: translateY(-50%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #2c2c2c;
+	line-height: 0;
+}
+
+.search-by-json .icon-search > svg {
+	display: block;
+	color: inherit;
+}
+
+.search-by-json .body {
+	z-index: 99999;
+	width: 100%;
+	margin-block: 0.25rem;
+	text-align: center;
+	padding: 0.5rem;
+	overflow-y: auto;
+	height: 100%;
+	color: #fff;
+}
+
+.search-by-json .body .default .mfs-empty-hint,
+.search-by-json .body .default p {
+	text-align: center;
+	padding-top: 2.5rem;
+	color: #fff;
+	font-size: 16px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+}
+
+.search-by-json .body .default .popular,
+.search-by-json .body .is-search {
+	text-align: right;
+}
+
+.search-by-json .body .default .popular .title-popular {
+	margin-top: 4rem;
+	margin-bottom: 1rem;
+	font-weight: bold;
+	font-size: var(--fs-15, 15px);
+	color: #fff;
+}
+
+.search-by-json .body .default .popular .menu-popular ul,
+.search-by-json .body .is-search .list-category ul,
+.search-by-json .body .is-search .mfs-terms .mfs-list ul {
+	display: block;
+	padding: 0;
+	margin: 0;
+}
+
+.search-by-json .body .default .popular .menu-popular ul li,
+.search-by-json .body .is-search .list-category ul li,
+.search-by-json .body .is-search .mfs-terms .mfs-list ul li {
+	text-align: center;
+	display: inline-block;
+	margin: 0.2rem 0.125rem;
+	list-style: none;
+}
+
+.search-by-json .body .default .popular .menu-popular ul li:first-child,
+.search-by-json .body .is-search .list-category ul li:first-child,
+.search-by-json .body .is-search .mfs-terms .mfs-list ul li:first-child {
+	margin-right: 0;
+}
+
+.search-by-json .body .default .popular .menu-popular ul li:last-child,
+.search-by-json .body .is-search .list-category ul li:last-child,
+.search-by-json .body .is-search .mfs-terms .mfs-list ul li:last-child {
+	margin-left: 0;
+}
+
+.search-by-json .body .default .popular .menu-popular ul li a,
+.search-by-json .body .is-search .list-category ul li a,
+.search-by-json .body .is-search .mfs-terms .mfs-list ul li a {
+	display: block;
+	font-size: var(--fs-14, 14px);
+	border: 1px solid #e2e3e547;
+	padding: 1rem 1.75rem;
+	font-weight: 500;
+	transition: 400ms;
+	line-height: 1.5;
+	border-radius: 10px;
+	color: #fff;
+}
+
+.search-by-json .body .default .popular .menu-popular ul li a:hover,
+.search-by-json .body .is-search .list-category ul li a:hover,
+.search-by-json .body .is-search .mfs-terms .mfs-list ul li a:hover {
+	background-color: var(--mfs-accent, #ff7020);
+	color: #fff;
+}
+
+.search-by-json .body .not-found,
+.search-by-json .body .mfs-not-found {
+	font-size: 1.2rem;
+	margin-top: 3rem;
+	color: #fff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 5px;
+}
+
+.search-by-json .body .is-search {
+	padding: 1.25rem;
+}
+
+.search-by-json .body .is-search .category,
+.search-by-json .body .is-search .mfs-section {
+	margin-bottom: 1.5rem;
+}
+
+.search-by-json .body .is-search .title-category,
+.search-by-json .body .is-search .title-posts,
+.search-by-json .body .is-search .title-games,
+.search-by-json .body .is-search .mfs-title {
+	font-weight: bold;
+	font-size: var(--fs-20, 20px);
+	color: #fff;
+}
+
+.search-by-json .body .is-search .posts {
+	margin-top: 1.5rem;
+}
+
+.search-by-json .list-posts,
+.search-by-json .list-games,
+.search-by-json .mfs-section:not(.mfs-terms) .mfs-list {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1.5rem;
+	margin-block: 1.5rem;
+	padding: 0;
+}
+
+.search-by-json .mfs-terms .mfs-list {
+	display: block;
+}
+
+.search-by-json .body .is-search .list-posts .item,
+.search-by-json .body .is-search .list-games .item,
+.search-by-json .body .is-search .mfs-section:not(.mfs-terms) .mfs-list .item {
+	transition: 500ms;
+	background-color: #fff;
+	border-radius: 12px !important;
+	border: 0.8px solid #ffffff45;
+	display: grid;
+	grid-template-columns: 6rem 11fr;
+	padding: 10px;
+	align-items: center;
+	gap: 15px;
+	margin: 0;
+	text-decoration: none !important;
+}
+
+.search-by-json .body .is-search .list-posts .item:hover,
+.search-by-json .body .is-search .list-games .item:hover,
+.search-by-json .body .is-search .mfs-section:not(.mfs-terms) .mfs-list .item:hover {
+	transform: translateY(-6px);
+	color: inherit;
+}
+
+.search-by-json .body .is-search .list-posts .item .img,
+.search-by-json .body .is-search .list-games .item .img,
+.search-by-json .body .is-search .mfs-section:not(.mfs-terms) .mfs-list .item .img {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 4px;
+	width: 6rem;
+	height: 6rem;
+	overflow: hidden;
+}
+
+.search-by-json .body .is-search .list-posts .item .img img,
+.search-by-json .body .is-search .list-games .item .img img,
+.search-by-json .body .is-search .mfs-section:not(.mfs-terms) .mfs-list .item .img img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: all ease-in-out 0.3s;
+}
+
+.search-by-json .body .is-search .list-posts .item:hover .img img,
+.search-by-json .body .is-search .list-games .item:hover .img img,
+.search-by-json .body .is-search .mfs-section:not(.mfs-terms) .mfs-list .item:hover .img img {
+	scale: 1.1;
+}
+
+.search-by-json .body .is-search .list-posts .item:hover .title,
+.search-by-json .body .is-search .list-games .item:hover .title,
+.search-by-json .body .is-search .mfs-section:not(.mfs-terms) .mfs-list .item:hover .title {
+	color: var(--mfs-accent, #ff7020);
+}
+
+.search-by-json .body .is-search .list-posts .item .title,
+.search-by-json .body .is-search .list-games .item .title,
+.search-by-json .body .is-search .mfs-section:not(.mfs-terms) .mfs-list .item .title {
+	font-size: 14.5px;
+	text-align: right;
+	color: #2c2c2c;
+	transition: all ease-in-out 0.3s;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	line-height: 2em;
+	word-wrap: break-word;
+	font-weight: 600;
+}
+
+.search-by-json .body .is-search .list-products .item .price,
+.search-by-json .body .is-search .mfs-section:not(.mfs-terms) .mfs-list .item .price {
+	line-height: 1.5;
+	text-align: left;
+	position: relative;
+	width: max-content;
+	display: flex;
+	color: #2c2c2c;
+	flex-direction: row;
+	margin-right: auto;
+}
+
+.search-by-json .body .is-search .list-products .item .price .discount,
+.search-by-json .body .is-search .mfs-section:not(.mfs-terms) .mfs-list .item .price .discount {
+	display: inline;
+	background: #d53343;
+	color: #fff;
+	padding: 0.25rem;
+	border-radius: 0.25rem;
+	font-size: 0.75rem;
+	font-weight: 500;
+	position: absolute;
+	bottom: 0;
+	left: 106%;
+}
+
+#search-by-json-form img {
+	user-select: none;
+	-webkit-user-select: none;
+	object-fit: cover;
+	border-radius: 10px;
+}
+
+#search-by-json-form a {
+	text-decoration: none !important;
+}
+
+.search-by-json .body::-webkit-scrollbar {
+	width: 0.5rem;
+}
+
+.search-by-json .body::-webkit-scrollbar-track {
+	background: #f1f1f1;
+	border-radius: 0.5rem;
+}
+
+.search-by-json .body::-webkit-scrollbar-thumb {
+	background: #888;
+	border-radius: 0.5rem;
+}
+
+.search-by-json .body::-webkit-scrollbar-thumb:hover {
+	background: #555;
+}
+
+@keyframes mfs-shake-top {
+
+	0%,
+	100% {
+		transform: rotate(0deg);
+		transform-origin: 50% 0;
+	}
+
+	10% {
+		transform: rotate(2deg);
+	}
+
+	20%,
+	40%,
+	60% {
+		transform: rotate(-4deg);
+	}
+
+	30%,
+	50%,
+	70% {
+		transform: rotate(4deg);
+	}
+
+	80% {
+		transform: rotate(-2deg);
+	}
+
+	90% {
+		transform: rotate(2deg);
+	}
+}
+
+.search-by-json .body .default p > svg,
+.search-by-json .body .default .mfs-empty-hint > svg,
+.search-by-json .body .not-found > svg,
+.search-by-json .body .mfs-not-found > svg {
+	animation: mfs-shake-top 1.8s cubic-bezier(0.455, 0.03, 0.515, 0.955) 1s infinite both;
+}
+
+@media (max-width: 1199.98px) {
+
+	.search-by-json .list-posts,
+	.search-by-json .list-games,
+	.search-by-json .mfs-section:not(.mfs-terms) .mfs-list {
+		grid-template-columns: 1fr;
+	}
+
+	.search-by-json .body .is-search .list-products .item .price .discount,
+	.search-by-json .body .is-search .mfs-section:not(.mfs-terms) .mfs-list .item .price .discount {
+		font-size: 10px;
+	}
+}
+
+@media (max-width: 991.98px) {
+
+	.search-by-json .body {
+		min-width: 100%;
+	}
+}
+
+@media (max-width: 767.98px) {
+
+	.search-body-box .close {
+		left: 1rem;
+	}
+
+	.search-by-json {
+		padding: 8rem 1rem 4rem;
+		width: 100%;
+	}
+}
+
+@media (max-width: 575.98px) {
+
+	.search-by-json .body .is-search .list-posts .item .title,
+	.search-by-json .body .is-search .list-games .item .title,
+	.search-by-json .body .is-search .mfs-section:not(.mfs-terms) .mfs-list .item .title {
+		font-size: 13.5px;
+	}
+
+	.search-by-json .body .default .popular .menu-popular ul li a,
+	.search-by-json .body .is-search .list-category ul li a,
+	.search-by-json .body .is-search .mfs-terms .mfs-list ul li a {
+		font-size: 12.5px;
+		padding: 1rem 0.6rem;
+	}
+
+	.search-by-json .body .is-search {
+		padding: 0.25rem;
+	}
+
+	.search-by-json .body .default .popular .menu-popular ul,
+	.search-by-json .body .is-search .list-category ul,
+	.search-by-json .body .is-search .mfs-terms .mfs-list ul {
+		padding: 0;
+	}
+
+	.search-by-json .body .default p {
+		font-size: 14px;
+	}
+}
