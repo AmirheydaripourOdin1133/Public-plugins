@@ -38,8 +38,8 @@ class MFS_License {
 
 	public static function register_menu() {
 		add_menu_page(
-			'فعال‌سازی لایسنس جستجوی زنده',
-			'جستجوی زنده',
+			'فعال‌سازی لایسنس تیزجو',
+			'تیزجو',
 			'manage_options',
 			self::PAGE_SLUG,
 			array(__CLASS__, 'render_page'),
@@ -89,7 +89,7 @@ class MFS_License {
 		?>
 		<div class="notice notice-warning mfs-license-notice">
 			<p>
-				<strong><?php esc_html_e('جستجوی زنده پیشرفته غیرفعال است.', 'advanced-live-fast-search-wp'); ?></strong>
+				<strong><?php esc_html_e('جستجوی زنده پیشرفته تیزجو غیرفعال است.', 'advanced-live-fast-search-wp'); ?></strong>
 				<?php esc_html_e('برای بارگذاری امکانات و تنظیمات افزونه، ابتدا لایسنس راست‌چین را برای این دامنه فعال کنید.', 'advanced-live-fast-search-wp'); ?>
 				<a class="button button-primary" href="<?php echo esc_url($url); ?>">
 					<?php esc_html_e('بررسی وضعیت لایسنس', 'advanced-live-fast-search-wp'); ?>
@@ -119,7 +119,7 @@ class MFS_License {
 						<img src="<?php echo esc_url(MFS_URL . 'assets/icons/icon-plugin.webp'); ?>" alt="" width="52" height="52">
 					</div>
 					<div>
-						<h1><?php esc_html_e('جستجوی زنده پیشرفته', 'advanced-live-fast-search-wp'); ?></h1>
+						<h1><?php esc_html_e('جستجوی زنده پیشرفته تیزجو', 'advanced-live-fast-search-wp'); ?></h1>
 						<p><?php esc_html_e('مدیریت وضعیت و فعال‌سازی لایسنس راست‌چین', 'advanced-live-fast-search-wp'); ?></p>
 					</div>
 				</div>

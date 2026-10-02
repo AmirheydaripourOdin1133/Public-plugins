@@ -1,5 +1,31 @@
 jQuery(function ($) {
-  var engine = window.MFS.createEngine({ debounce: 180 });
+  function modalItemHtml(value) {
+    var img = value.img
+      ? '<div class="img"><img src="' +
+        String(value.img).replace(/"/g, "&quot;") +
+        '" alt="" loading="lazy"></div>'
+      : '<div class="img"></div>';
+    var price = value.price_html
+      ? '<div class="price">' +
+        value.price_html +
+        (value.sale > 0 ? '<span class="discount">' + value.sale + "%</span>" : "") +
+        "</div>"
+      : "";
+
+    return (
+      '<a href="' +
+      String(value.link || "#").replace(/"/g, "&quot;") +
+      '" class="item">' +
+      img +
+      '<div class="mfs-item-body"><div class="title">' +
+      (value.title || "") +
+      "</div>" +
+      price +
+      "</div></a>"
+    );
+  }
+
+  var engine = window.MFS.createEngine({ debounce: 180, itemHtml: modalItemHtml });
 
   function openModal() {
     $(".search-body-box").addClass("open");

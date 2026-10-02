@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name:       جستجوی زنده پیشرفته وردپرس (نسخه تست بدون قفل)
+ * Plugin Name:       افزونه جستجوی زنده پیشرفته وردپرس و ووکامرس (تیزجو) — تست بدون قفل
  * Plugin URI:        https://www.rtl-theme.com
- * Description:       نسخه تست توسعه — بدون قفل لایسنس راست‌چین. فقط برای تست کامل امکانات روی لوکال/هاست تست. این نسخه برای فروش نیست.
- * Version:           1.4.2-dev
+ * Description:       نسخه تست توسعه تیزجو — بدون قفل لایسنس راست‌چین. فقط برای تست کامل امکانات. این نسخه برای فروش نیست.
+ * Version:           1.0.0-dev
  * Author:            Amir Heydaripur
  * Author URI:        https://www.rtl-theme.com/author/amir.h.heydaripour/products/
  * License:           GPL-2.0-or-later
@@ -15,7 +15,7 @@
 
 defined('ABSPATH') || exit;
 
-define('MFS_VERSION', '1.4.2-dev');
+define('MFS_VERSION', '1.0.0-dev');
 define('MFS_FILE', __FILE__);
 define('MFS_DIR', plugin_dir_path(__FILE__));
 define('MFS_URL', plugin_dir_url(__FILE__));
@@ -33,9 +33,11 @@ require_once MFS_DIR . 'includes/class-mfs-render.php';
 require_once MFS_DIR . 'includes/class-mfs-settings.php';
 require_once MFS_DIR . 'includes/class-mfs-plugin.php';
 
-if (false === get_option(MFS_OPTION, false) || false === get_option(MFS_CACHE_NAME, false)) {
-	MFS_Plugin::activate();
-}
+add_action('plugins_loaded', static function () {
+	if (false === get_option(MFS_OPTION, false) || false === get_option(MFS_CACHE_NAME, false)) {
+		MFS_Plugin::activate();
+	}
+}, 1);
 
 MFS_Plugin::instance();
 

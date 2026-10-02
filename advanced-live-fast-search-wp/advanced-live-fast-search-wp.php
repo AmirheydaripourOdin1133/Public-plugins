@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name:       جستجوی زنده پیشرفته وردپرس
+ * Plugin Name:       افزونه جستجوی زنده پیشرفته وردپرس و ووکامرس (تیزجو)
  * Plugin URI:        https://www.rtl-theme.com
- * Description:       جستجوی زنده و فوق‌سریع وردپرس (Advanced Live Fast Search WP) با کش هوشمند JSON، چهار سبک نمایش، پشتیبانی از ووکامرس و پنل تنظیمات فارسی.
- * Version:           1.4.2
+ * Description:       جستجوی زنده پیشرفته تیزجو برای وردپرس و ووکامرس؛ کش هوشمند JSON، چهار سبک نمایش و پنل تنظیمات فارسی.
+ * Version:           1.0.0
  * Author:            Amir Heydaripur
  * Author URI:        https://www.rtl-theme.com/author/amir.h.heydaripour/products/
  * License:           GPL-2.0-or-later
@@ -15,7 +15,7 @@
 
 defined('ABSPATH') || exit;
 
-define('MFS_VERSION', '1.4.2');
+define('MFS_VERSION', '1.0.0');
 define('MFS_FILE', __FILE__);
 define('MFS_DIR', plugin_dir_path(__FILE__));
 define('MFS_URL', plugin_dir_url(__FILE__));
@@ -74,9 +74,12 @@ if ($mfs_license_active) {
 
 	// A site may activate the plugin before registering its RTL license.
 	// Initialize product defaults on the first licensed request as well.
-	if (false === get_option(MFS_OPTION, false) || false === get_option(MFS_CACHE_NAME, false)) {
-		MFS_Plugin::activate();
-	}
+	// Must run after pluggable.php so wp_generate_password() exists.
+	add_action('plugins_loaded', static function () {
+		if (false === get_option(MFS_OPTION, false) || false === get_option(MFS_CACHE_NAME, false)) {
+			MFS_Plugin::activate();
+		}
+	}, 1);
 
 	MFS_Plugin::instance();
 

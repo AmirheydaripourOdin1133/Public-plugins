@@ -60,8 +60,8 @@ foreach ($rel in $encodedFiles) {
 }
 
 function Test-IsEncoded([string]$path) {
-	$h = (Get-Content -LiteralPath $path -TotalCount 4 -ErrorAction SilentlyContinue) -join "`n"
-	return [bool]($h -match 'ionCube|Encrypted by|ICB0')
+	$h = (Get-Content -LiteralPath $path -TotalCount 6 -ErrorAction SilentlyContinue) -join "`n"
+	return [bool]($h -match 'ionCube|Encrypted by|ICB0|Invalid protected payload|token_get_all')
 }
 
 $errors = New-Object System.Collections.Generic.List[string]

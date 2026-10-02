@@ -1,7 +1,7 @@
 STATUS=PASS
-TIME=2026-09-26T23:40:12.6862543+03:30
+TIME=2026-09-30T04:42:18.5613613+03:30
 ZIP=C:\Users\Amir\Desktop\advanced-live-fast-search-wp\rtl-release\package\Plugin\advanced-live-fast-search-wp.zip
-ZIP_SIZE=373396
+ZIP_SIZE=400268
 
 === OK ===
 main has Plugin Name

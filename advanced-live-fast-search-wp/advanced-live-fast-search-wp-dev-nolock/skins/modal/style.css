@@ -288,7 +288,7 @@
 	border-radius: 12px !important;
 	border: 0.8px solid #ffffff45;
 	display: grid;
-	grid-template-columns: 6rem 11fr;
+	grid-template-columns: 6rem minmax(0, 1fr);
 	padding: 10px;
 	align-items: center;
 	gap: 15px;
@@ -351,32 +351,57 @@
 	line-height: 2em;
 	word-wrap: break-word;
 	font-weight: 600;
+	min-width: 0;
+	width: 100%;
+}
+
+.search-by-json .body .is-search .list-posts .item .mfs-item-body,
+.search-by-json .body .is-search .list-games .item .mfs-item-body,
+.search-by-json .body .is-search .mfs-section:not(.mfs-terms) .mfs-list .item .mfs-item-body {
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	gap: 6px;
 }
 
 .search-by-json .body .is-search .list-products .item .price,
 .search-by-json .body .is-search .mfs-section:not(.mfs-terms) .mfs-list .item .price {
 	line-height: 1.5;
-	text-align: left;
-	position: relative;
-	width: max-content;
+	text-align: right;
+	position: static;
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
 	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 6px;
 	color: #2c2c2c;
-	flex-direction: row;
-	margin-right: auto;
+	margin: 0;
+}
+
+.search-by-json .body .is-search .list-products .item .price del,
+.search-by-json .body .is-search .list-products .item .price ins,
+.search-by-json .body .is-search .mfs-section:not(.mfs-terms) .mfs-list .item .price del,
+.search-by-json .body .is-search .mfs-section:not(.mfs-terms) .mfs-list .item .price ins {
+	display: inline;
 }
 
 .search-by-json .body .is-search .list-products .item .price .discount,
 .search-by-json .body .is-search .mfs-section:not(.mfs-terms) .mfs-list .item .price .discount {
-	display: inline;
+	display: inline-flex;
 	background: #d53343;
 	color: #fff;
-	padding: 0.25rem;
+	padding: 0.15rem 0.35rem;
 	border-radius: 0.25rem;
 	font-size: 0.75rem;
 	font-weight: 500;
-	position: absolute;
-	bottom: 0;
-	left: 106%;
+	position: static;
+	left: auto;
+	bottom: auto;
 }
 
 #search-by-json-form img {

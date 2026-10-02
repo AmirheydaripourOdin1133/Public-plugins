@@ -10,7 +10,7 @@ class MFS_Elementor {
 
 	public static function register_category($elements_manager) {
 		$elements_manager->add_category('mfs-search', array(
-			'title' => 'جستجوی زنده',
+			'title' => 'جستجوی زنده تیزجو',
 			'icon'  => 'fa fa-search',
 		));
 	}

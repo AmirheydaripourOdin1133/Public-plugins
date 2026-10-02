@@ -33,7 +33,7 @@ class MFS_Plugin {
 	}
 
 	public function register_menu_location() {
-		register_nav_menu('mfs-popular', 'جستجوهای پرطرفدار (جستجوی زنده)');
+		register_nav_menu('mfs-popular', 'جستجوهای پرطرفدار (تیزجو)');
 	}
 
 	public function register_content_hooks() {
@@ -191,19 +191,19 @@ class MFS_Plugin {
 
 		if (get_transient('mfs_just_activated')) {
 			delete_transient('mfs_just_activated');
-			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('افزونه «جستجوی زنده پیشرفته» فعال شد. کش داده‌ها در پس‌زمینه ساخته می‌شود؛ وضعیت را از صفحه تنظیمات پیگیری کنید.', 'advanced-live-fast-search-wp') . '</p></div>';
+			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('افزونه «جستجوی زنده پیشرفته تیزجو» فعال شد. کش داده‌ها در پس‌زمینه ساخته می‌شود؛ وضعیت را از صفحه تنظیمات پیگیری کنید.', 'advanced-live-fast-search-wp') . '</p></div>';
 		}
 
 		$post_types = (array) $this->get('post_types');
 		$taxonomies = (array) $this->get('taxonomies');
 
 		if (empty($post_types) && empty($taxonomies)) {
-			echo '<div class="notice notice-warning"><p>' . esc_html__('جستجوی زنده: هیچ نوع محتوایی برای جستجو انتخاب نشده است.', 'advanced-live-fast-search-wp') . ' <a href="' . esc_url(admin_url('admin.php?page=mfs-settings')) . '">' . esc_html__('انتخاب منابع جستجو', 'advanced-live-fast-search-wp') . '</a></p></div>';
+			echo '<div class="notice notice-warning"><p>' . esc_html__('تیزجو: هیچ نوع محتوایی برای جستجو انتخاب نشده است.', 'advanced-live-fast-search-wp') . ' <a href="' . esc_url(admin_url('admin.php?page=mfs-settings')) . '">' . esc_html__('انتخاب منابع جستجو', 'advanced-live-fast-search-wp') . '</a></p></div>';
 			return;
 		}
 
 		if (!MFS_Cache::exists()) {
-			echo '<div class="notice notice-info is-dismissible"><p>' . esc_html__('جستجوی زنده: کش داده‌ها هنوز ساخته نشده و نتایج موقتاً خالی است.', 'advanced-live-fast-search-wp') . ' <a href="' . esc_url(admin_url('admin.php?page=mfs-settings')) . '">' . esc_html__('ساخت فوری کش', 'advanced-live-fast-search-wp') . '</a></p></div>';
+			echo '<div class="notice notice-info is-dismissible"><p>' . esc_html__('تیزجو: کش داده‌ها هنوز ساخته نشده و نتایج موقتاً خالی است.', 'advanced-live-fast-search-wp') . ' <a href="' . esc_url(admin_url('admin.php?page=mfs-settings')) . '">' . esc_html__('ساخت فوری کش', 'advanced-live-fast-search-wp') . '</a></p></div>';
 		}
 	}
 }

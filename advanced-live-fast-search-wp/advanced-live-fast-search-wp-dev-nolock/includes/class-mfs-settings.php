@@ -14,8 +14,8 @@ class MFS_Settings {
 
 	public static function register_menu() {
 		add_menu_page(
-			'جستجوی زنده پیشرفته',
-			'جستجوی زنده',
+			'جستجوی زنده پیشرفته تیزجو',
+			'تیزجو',
 			'manage_options',
 			self::PAGE_SLUG,
 			array(__CLASS__, 'render_page'),
@@ -158,7 +158,7 @@ class MFS_Settings {
 						?>
 					</div>
 					<div>
-						<h1>جستجوی زنده پیشرفته</h1>
+						<h1>جستجوی زنده پیشرفته تیزجو</h1>
 						<p>کش سمت سرور + جستجوی آنی سمت کاربر — آماده فروشگاه‌های وردپرسی</p>
 					</div>
 				</div>
@@ -259,7 +259,7 @@ class MFS_Settings {
 								<li><code dir="ltr">[mfs_search skin="split-panel"]</code> — پنل دوستونه</li>
 							</ul>
 							<?php if (did_action('elementor/loaded')) : ?>
-								<p class="mfs-note mfs-note--ok">ویجت Elementor «جستجوی زنده» در دستهٔ همین نام فعال است.</p>
+								<p class="mfs-note mfs-note--ok">ویجت Elementor «جستجوی زنده تیزجو» در دستهٔ همین نام فعال است.</p>
 							<?php else : ?>
 								<p class="mfs-muted">با نصب Elementor، ویجت اختصاصی جستجو هم در دسترس قرار می‌گیرد.</p>
 							<?php endif; ?>
@@ -413,7 +413,7 @@ class MFS_Settings {
 								?>
 							</div>
 							<div class="mfs-dev-support__text">
-								<p><strong>جستجوی زنده پیشرفته</strong> تجربهٔ جستجوی آنی در فروشگاه وردپرس/ووکامرس شماست؛ با کش JSON و جستجوی سمت مرورگر، بدون تأخیر در هر کلید.</p>
+								<p><strong>جستجوی زنده پیشرفته تیزجو</strong> تجربهٔ جستجوی آنی در فروشگاه وردپرس/ووکامرس شماست؛ با کش JSON و جستجوی سمت مرورگر، بدون تأخیر در هر کلید.</p>
 								<p>چهار سبک نمایش مودال، خطی، تاپ‌پنل و پنل دوستونه، ویجت Elementor و پنل تنظیمات فارسی — برای فروشگاه‌هایی که سرعت و UX حرفه‌ای می‌خواهند.</p>
 							</div>
 						</div>
@@ -435,7 +435,7 @@ class MFS_Settings {
 							<a class="mfs-btn mfs-btn--primary" href="<?php echo esc_url($rtl_shop_url); ?>" target="_blank" rel="noopener noreferrer">مشاهدهٔ محصولات</a>
 						</p>
 						<p class="mfs-help-copyright">
-							© <?php echo esc_html(gmdate('Y')); ?> Amir Heydaripur — Advanced Live Fast Search — نسخه <?php echo esc_html(MFS_VERSION); ?> — تمامی حقوق محفوظ است.
+							© <?php echo esc_html(gmdate('Y')); ?> Amir Heydaripur — جستجوی زنده پیشرفته تیزجو — نسخه <?php echo esc_html(MFS_VERSION); ?> — تمامی حقوق محفوظ است.
 						</p>
 					</div>
 				</div>

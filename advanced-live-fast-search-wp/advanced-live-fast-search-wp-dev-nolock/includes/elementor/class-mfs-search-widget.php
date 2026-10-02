@@ -11,7 +11,7 @@ class MFS_Elementor_Search_Widget extends Widget_Base {
 	}
 
 	public function get_title() {
-		return 'جستجوی زنده';
+		return 'جستجوی زنده تیزجو';
 	}
 
 	public function get_icon() {
@@ -77,7 +77,7 @@ class MFS_Elementor_Search_Widget extends Widget_Base {
 	protected function content_template() {
 		?>
 		<#
-		var label = 'جستجوی زنده';
+		var label = 'جستجوی زنده تیزجو';
 		if ( settings.mode === 'trigger' ) { label = 'آیکون جستجو'; }
 		else if ( settings.mode === 'field' ) { label = 'فیلد جستجو'; }
 		#>
