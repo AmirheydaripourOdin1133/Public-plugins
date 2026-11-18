@@ -1,0 +1,64 @@
+/* DSSG Admin — DS design system style */
+.dssg-admin{direction:rtl;color:#0f172a}
+.dssg-header{margin:20px 0 24px;padding:22px 24px 0;background:linear-gradient(135deg,#111827,#1e3a5f);border-radius:16px;color:#fff;box-shadow:0 10px 30px rgba(15,23,42,.14)}
+.dssg-brand{display:flex;align-items:center;gap:14px;padding-bottom:20px}
+.dssg-brand>.dashicons{width:46px;height:46px;font-size:30px;line-height:46px;text-align:center;background:rgba(255,255,255,.12);border-radius:12px}
+.dssg-brand .dssg-title{margin:0 0 4px;color:#fff;font-size:25px;line-height:1.4;font-weight:600}
+.dssg-brand p{margin:0;color:#cbd5e1}
+.dssg-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.dssg-tabs a{display:inline-flex;align-items:center;gap:7px;padding:12px 17px;color:#cbd5e1;text-decoration:none;border-radius:10px 10px 0 0;transition:background-color .2s,color .2s}
+.dssg-tabs a:hover{color:#fff;background:rgba(255,255,255,.08)}
+.dssg-tabs a.is-active{color:#0f172a;background:#f6f7f7;font-weight:600}
+.dssg-tabs .dashicons{font-size:18px;width:18px;height:18px}
+.dssg-tabs a:focus-visible{outline:2px solid #fff;outline-offset:-3px}
+.dssg-card{margin:18px 0;padding:22px 24px;background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 3px 14px rgba(15,23,42,.045)}
+.dssg-card-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:16px;border-bottom:1px solid #e2e8f0}
+.dssg-card-heading h2{margin:0 0 7px;font-size:18px;color:#0f172a}
+.dssg-card-heading p{margin:0;color:#64748b;line-height:1.8}
+.dssg-status{display:inline-flex;align-items:center;justify-content:center;min-width:66px;padding:6px 12px;border-radius:100px;font-weight:600;white-space:nowrap}
+.dssg-status.is-on{color:#166534;background:#dcfce7}
+.dssg-status.is-off{color:#991b1b;background:#fee2e2}
+.dssg-admin .form-table{margin-top:8px}
+.dssg-admin .form-table th{width:240px;color:#334155}
+.dssg-admin .form-table td{color:#475569}
+.dssg-admin .form-table input[type=text],.dssg-admin .form-table input[type=number],.dssg-admin .form-table select{border-color:#cbd5e1;border-radius:8px;min-height:38px;max-width:100%}
+.dssg-admin .form-table input[type=text]{width:410px}
+.dssg-admin .form-table input[type=number]{width:110px}
+.dssg-admin .form-table select{min-width:240px}
+.dssg-admin .form-table input[type=checkbox]{margin-left:8px}
+.dssg-card-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:20px;padding-top:18px;border-top:1px solid #e2e8f0;color:#64748b}
+.dssg-style-section{margin-top:18px;padding-top:20px;border-top:1px solid #e2e8f0}
+.dssg-style-heading h3{margin:0 0 6px;font-size:16px;color:#0f172a}
+.dssg-style-heading p{margin:0;color:#64748b;line-height:1.8}
+.dssg-style-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+.dssg-style-field{display:flex;flex-direction:column;align-items:stretch;gap:7px;padding:14px;border:1px solid #e2e8f0;border-radius:10px;background:#f8fafc}
+.dssg-style-field>span,.dssg-style-field>label{font-weight:600;color:#334155}
+.dssg-style-field input{width:100%;min-height:38px;border:1px solid #cbd5e1;border-radius:8px;text-align:left}
+.dssg-style-field .wp-picker-container{direction:ltr;align-self:flex-start}
+.dssg-style-field .wp-picker-container input.wp-color-picker{width:7em;min-height:30px}
+.dssg-style-field select{width:100%;min-height:38px;border:1px solid #cbd5e1;border-radius:8px;text-align:left}
+.dssg-style-field small{color:#64748b;line-height:1.6}
+.dssg-tab-block{border:1px solid #e2e8f0;border-radius:12px;padding:18px;margin-bottom:18px;background:#f8fafc}
+.dssg-tab-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.dssg-tab-header h4{margin:0;font-size:16px;color:#0f172a}
+.dssg-tab-header .button{font-size:12px;padding:4px 10px}
+.dssg-item-block{border:1px solid #e2e8f0;border-radius:10px;padding:14px;margin-bottom:14px;background:#fff}
+.dssg-item-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.dssg-item-header h5{margin:0;font-size:14px;color:#0f172a}
+.dssg-item-header .button{font-size:12px;padding:4px 10px}
+.dssg-editor{width:100%;min-height:120px;font-family:Consolas,Monaco,monospace;border:1px solid #cbd5e1;border-radius:8px;padding:10px}
+.dssg-code-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:20px 0}
+.dssg-code-grid>div{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:16px;border:1px solid #e2e8f0;border-radius:10px;background:#f8fafc}
+.dssg-code-grid span{font-weight:600}
+.dssg-opt-icon{width:20px;height:20px;vertical-align:middle;margin-right:6px;display:inline-block}
+.dssg-custom-icon{border:1px solid #ddd;border-radius:4px}
+@media(max-width:760px){
+	.dssg-header{padding-inline:16px}
+	.dssg-tabs a{padding-inline:10px}
+	.dssg-card{padding:18px}
+	.dssg-code-grid,.dssg-style-grid{grid-template-columns:1fr}
+	.dssg-card-heading,.dssg-card-footer{flex-direction:column;align-items:flex-start}
+	.dssg-admin .form-table th{width:auto}
+	.dssg-admin .form-table td{padding-top:4px}
+}
+@media(prefers-reduced-motion:reduce){.dssg-tabs a{transition:none}}
